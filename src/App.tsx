@@ -1,24 +1,49 @@
-import './App.css'
-import { Navigate, useLocation } from 'react-router-dom'
-import AuthProvider, { useAuth } from './providers/AuthProvider'
+import "./App.css";
+import {
+  BrowserRouter,
+  Navigate,
+  Route,
+  Routes,
+  useLocation,
+} from "react-router-dom";
+import AuthProvider, { useAuth } from "./providers/AuthProvider";
+import LoginPage from "./presentation/login/page";
+import DashboardPage from "./presentation/dashboard/page";
 
 const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
   const { isAuthenticated } = useAuth();
   const location = useLocation();
   if (!isAuthenticated) {
-    sessionStorage.setItem('redirectPath', location.pathname);
+    sessionStorage.setItem("redirectPath", location.pathname);
     return <Navigate to="/login" state={{ from: location }} replace />;
   }
-  return children
-}
+  return children;
+};
 
 function App() {
-
   return (
     <AuthProvider>
-      <div className='text-2xl font-bold'>Simple Provider App</div>
+      <BrowserRouter basename="/">
+        <Routes>
+          {/* Public route for login */}
+          <Route path="/login" element={<LoginPage />} />
+
+          {/* Protected route for the dashboard */}
+          <Route
+            path="/dashboard"
+            element={
+              <ProtectedRoute>
+                <DashboardPage />
+              </ProtectedRoute>
+            }
+          />
+
+          {/* Redirect root path to dashboard */}
+          <Route path="/" element={<Navigate to="/dashboard" />} />
+        </Routes>
+      </BrowserRouter>
     </AuthProvider>
-  )
+  );
 }
 
-export default App
+export default App;
