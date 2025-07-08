@@ -8,6 +8,7 @@ import React, {
   useState,
 } from "react";
 import AuthServer from "../server/AuthServer";
+import LoadingPage from "../presentation/loading/page";
 
 interface AuthContextType {
   isAuthenticated: boolean;
@@ -64,7 +65,9 @@ export default function AuthProvider({
         setCurrentUser(credentials.userName);
         setIsAuthenticated(true);
       } catch (err) {
-        setError(err instanceof Error ? err.message : "An unknown error occurred.");
+        setError(
+          err instanceof Error ? err.message : "An unknown error occurred."
+        );
         throw err;
       } finally {
         setIsLoading(false);
@@ -90,7 +93,11 @@ export default function AuthProvider({
     [isAuthenticated, currentUser, login, logout, isLoading, error]
   );
 
-  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
+  return (
+    <AuthContext.Provider value={value}>
+      {isLoading ? LoadingPage() : children}
+    </AuthContext.Provider>
+  );
 }
 
 export function useAuth() {
