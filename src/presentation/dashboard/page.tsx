@@ -1,12 +1,9 @@
 "use client";
 
-import { useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "../../providers/AuthProvider";
 
 export default function DashboardPage() {
-  const { currentUser } = useAuth();
-  const navigate = useNavigate();
-  const location = useLocation();
+  const { currentUser, logout } = useAuth();
 
   return (
     <div className="flex flex-col items-center justify-center h-screen">
@@ -15,6 +12,7 @@ export default function DashboardPage() {
       <p className="text-sm text-gray-600 mt-2">
         This is a protected route, accessible only to authenticated users.
       </p>
+      <button className="mt-4 bg-blue-500 text-white py-2 px-4 rounded-md cursor-pointer hover:bg-blue-600 transition-colors" onClick={logout}>Sair</button>
     </div>
   );
 }

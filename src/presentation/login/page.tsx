@@ -27,6 +27,8 @@ export default function LoginPage() {
     await login({
       userName: userName,
       password: password || "password", // Default password if not provided
+    }).catch((error) => {
+      console.error("Login failed:", error);
     });
     navigate(from, { replace: true });
   };
