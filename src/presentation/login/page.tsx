@@ -1,39 +1,83 @@
 "use client";
 
+import { useLocation, useNavigate } from "react-router-dom";
+import { type FormEvent, useEffect, useState } from "react";
+import { useAuth } from "../../providers/AuthProvider";
+
 export default function LoginPage() {
+  const { login, isAuthenticated } = useAuth();
+  const navigate = useNavigate();
+  const location = useLocation();
+  const [userName, setUserName] = useState("");
+  const [password, setPassword] = useState("");
+
+  // The path to redirect to after login. Get it from the router's state
+  // or default to the dashboard if the user lands on /login directly.
+  const from = location.state?.from?.pathname || "/dashboard";
+
+  // If the user is already authenticated, redirect them away from the login page.
+  useEffect(() => {
+    if (isAuthenticated) {
+      navigate(from, { replace: true });
+    }
+  }, [isAuthenticated, navigate, from]);
+
+  const handleLogin = async (event: FormEvent) => {
+    event.preventDefault(); // Prevent the form from causing a page reload
+    await login({
+      userName: userName,
+      password: password || "password", // Default password if not provided
+    });
+    navigate(from, { replace: true });
+  };
+
   return (
-    <div className="flex flex-col items-center justify-center">
-      <h1 className="text-3xl font-bold mb-4">Login Page</h1>
-      <form className="w-80">
-        <div className="mb-4">
-          <label className="block text-sm font-medium mb-2" htmlFor="username">
-            Username
-          </label>
-          <input
-            type="text"
-            id="username"
-            className="w-full px-3 py-2 border border-gray-300 rounded"
-            placeholder="Enter your username"
-          />
-        </div>
-        <div className="mb-4">
-          <label className="block text-sm font-medium mb-2" htmlFor="password">
-            Password
-          </label>
-          <input
-            type="password"
-            id="password"
-            className="w-full px-3 py-2 border border-gray-300 rounded"
-            placeholder="Enter your password"
-          />
-        </div>
-        <button
-          type="submit"
-          className="w-full bg-blue-500 text-white py-2 rounded hover:bg-blue-600 transition-colors"
-        >
+    <div className="flex flex-col items-center justify-center h-screen">
+      <div className="p-8 bg-white rounded-lg shadow-md w-full max-w-sm">
+        <h1 className="text-2xl font-bold mb-4 text-center text-gray-600">
           Login
-        </button>
-      </form>
+        </h1>
+        <form onSubmit={handleLogin} className="space-y-4">
+          <div>
+            <label
+              className="block text-sm font-medium mb-1 text-gray-600"
+              htmlFor="username"
+            >
+              Username
+            </label>
+            <input
+              type="text"
+              id="username"
+              value={userName}
+              onChange={(e) => setUserName(e.target.value)}
+              className="w-full px-3 py-2 border border-gray-300 text-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              placeholder="Enter any username"
+            />
+          </div>
+          <div>
+            <label
+              className="block text-sm font-medium mb-1 text-gray-600"
+              htmlFor="password"
+            >
+              Password
+            </label>
+            <input
+              type="password"
+              id="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              className="w-full px-3 py-2 border border-gray-300 text-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              placeholder="Enter any password"
+            />
+          </div>
+          <button
+            type="submit"
+            className="w-full bg-blue-500 text-white py-2 rounded-md hover:bg-blue-600 transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+          >
+            Log in
+          </button>
+        </form>
+      </div>
     </div>
   );
 }
