@@ -2,7 +2,10 @@
 
 class AuthServer {
     static #instance: AuthServer;
-    private constructor() {}
+    static #api: string;
+    private constructor() {
+        AuthServer.#api = import.meta.env.VITE_API_URL
+    }
     public static get instance(): AuthServer {
         if (!AuthServer.#instance) {
             AuthServer.#instance = new AuthServer();
