@@ -7,8 +7,15 @@ import React, {
   useMemo,
   useState,
 } from "react";
+import Cookies from "js-cookie";
 import AuthServer from "../server/AuthServer";
 import LoadingPage from "../presentation/loading/page";
+
+type SessionStatusType =
+  | "UP"
+  | "DOWN"
+  | "LOADING"
+  | "ERROR";
 
 interface AuthContextType {
   isAuthenticated: boolean;
@@ -22,6 +29,9 @@ interface AuthContextType {
     userName: string;
     password?: string;
   }) => Promise<void>;
+  createSession: (currentUser: string) => void;
+  clearSession: () => void;
+  sessionStatus: SessionStatusType;
   /**
    * Logs out the user.
    * @returns A promise that resolves when the logout is successful.
@@ -42,6 +52,10 @@ export default function AuthProvider({
   const [currentUser, setCurrentUser] = useState<string | undefined>(undefined);
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [sessionStatus, setSessionStatus] = useState<SessionStatusType>(
+    "DOWN"
+  );
+  const cookie = Cookies
   // Use the singleton instance of AuthServer
   // This ensures that the same instance is used across the application
   // and avoids unnecessary re-instantiation.
@@ -55,6 +69,7 @@ export default function AuthProvider({
       }
       setIsLoading(true);
       setError(null);
+      setSessionStatus("LOADING");
       try {
         const data = await server.login(credentials, {
           password: credentials.password || "password",
@@ -62,12 +77,15 @@ export default function AuthProvider({
         if (!data) {
           throw new Error("Login failed: Invalid credentials or server error.");
         }
+        await createSession(credentials.userName);
         setCurrentUser(credentials.userName);
         setIsAuthenticated(true);
+        setSessionStatus("UP");
       } catch (err) {
         setError(
           err instanceof Error ? err.message : "An unknown error occurred."
         );
+        setSessionStatus("ERROR");
         throw err;
       } finally {
         setIsLoading(false);
@@ -76,10 +94,24 @@ export default function AuthProvider({
     []
   );
 
-  const logout = useCallback(() => {
+  const logout = useCallback(async () => {
+    await clearSession();
+    setCurrentUser(undefined);
     setIsAuthenticated(false);
+    setSessionStatus("DOWN");
     setError(null);
   }, []);
+
+
+  const createSession = async (currentUser: string) => {
+    cookie.set("session", "true", { expires: 1 })
+    cookie.set("user", currentUser, { expires: 1 })
+  };
+
+  const clearSession = async  () => {
+    cookie.remove("session")
+    cookie.remove("user")
+  };
 
   const value = useMemo(
     () => ({
@@ -87,15 +119,18 @@ export default function AuthProvider({
       currentUser,
       login,
       logout,
+      createSession,
+      clearSession,
       isLoading,
       error,
+      sessionStatus,
     }),
-    [isAuthenticated, currentUser, login, logout, isLoading, error]
+    [isAuthenticated, currentUser, login, logout, isLoading, error, sessionStatus]
   );
 
   return (
     <AuthContext.Provider value={value}>
-      {isLoading ? LoadingPage() : children}
+      {isLoading ? <LoadingPage /> : children}
     </AuthContext.Provider>
   );
 }
