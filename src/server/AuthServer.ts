@@ -13,7 +13,7 @@ class AuthServer {
         return AuthServer.#instance;
     }
 
-    public async login( userName : {userName: String}, password: {password: String}): Promise<boolean> {
+    public async login( userName : {userName: string}, password: {password: string}): Promise<boolean> {
         try {
             const response = await fetch(`${AuthServer.#api}login`, {
                 method: 'POST',

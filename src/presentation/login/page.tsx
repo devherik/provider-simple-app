@@ -2,7 +2,7 @@
 
 import { useLocation, useNavigate } from "react-router-dom";
 import { type FormEvent, useEffect, useState } from "react";
-import { useAuth } from "../../providers/AuthProvider";
+import { useAuth } from "../../hooks/useAuth";
 
 export default function LoginPage() {
   const { login, isAuthenticated } = useAuth();

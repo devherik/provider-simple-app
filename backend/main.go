@@ -1,65 +1,76 @@
 package main
 
 import (
+	"log"
 	"net/http"
+	"time"
 
-	"github.com/gin-contrib/cors" // Import the CORS middleware
+	"provider-simple-app-backend/internal/config"
+	"provider-simple-app-backend/internal/handlers"
+	"provider-simple-app-backend/internal/middleware"
+	"provider-simple-app-backend/internal/services"
+
 	"github.com/gin-gonic/gin"
 )
 
-// main is the entrypoint for the application and starts the HTTP server.
 func main() {
-	router := gin.Default()
-	// Use the CORS middleware
-	config := cors.Config{
-		AllowAllOrigins: true,
-		// AllowOrigins:           []string{"http://localhost:5173/*"},
-		AllowCredentials:       true,
-		AllowMethods:           []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"},
-		AllowHeaders:           []string{"Content-Type", "Authorization"},
-		ExposeHeaders:          []string{"Content-Length"},
-		AllowBrowserExtensions: true,
-		MaxAge:                 12 * 3600, // Cache preflight response for 12 hours
+	// Load configuration
+	cfg := config.New()
+
+	// Set Gin mode based on environment
+	if cfg.Environment == "production" {
+		gin.SetMode(gin.ReleaseMode)
 	}
-	router.Use(cors.New(config))
 
-	router.GET("/ping", func(c *gin.Context) {
-		c.JSON(http.StatusOK, gin.H{
-			"message": "pong",
-		})
-	})
-	router.POST("/login", func(ctx *gin.Context) {
-		var loginData struct {
-			Username string `json:"username"`
-			Password string `json:"password"`
-		}
-		if err := ctx.ShouldBindJSON(&loginData); err != nil {
-			ctx.JSON(http.StatusBadRequest, gin.H{
-				"message": "Invalid request",
-			})
-			return
-		}
+	// Initialize services
+	authService := services.NewAuthService()
 
-		if loginData.Username == "admin" && loginData.Password == "password" {
-			ctx.JSON(http.StatusOK, gin.H{
-				"message": "Login successful",
-			})
-		} else {
-			ctx.JSON(http.StatusUnauthorized, gin.H{
-				"message": "Invalid credentials",
-			})
-		}
-	})
-	router.POST("/logout", func(ctx *gin.Context) {
-		// In a real application, you would handle session termination here.
-		ctx.JSON(http.StatusOK, gin.H{
-			"message": "Logout successful",
-		})
-	})
-	router.GET("/status", func(ctx *gin.Context) {
-		ctx.JSON(http.StatusOK, gin.H{
-			"status": "Server is running",
-		})
-	})
-	router.Run("localhost:8080")
+	// Initialize handlers
+	authHandler := handlers.NewAuthHandler(authService)
+
+	// Setup router
+	router := gin.New()
+
+	// Add middleware
+	router.Use(middleware.Logger())
+	router.Use(middleware.ErrorHandler())
+	router.Use(middleware.SetupCORS(cfg))
+
+	// Setup routes
+	setupRoutes(router, authHandler)
+
+	// Create server
+	srv := &http.Server{
+		Addr:    ":" + cfg.Port,
+		Handler: router,
+		// Security settings
+		ReadTimeout:  10 * time.Second,
+		WriteTimeout: 10 * time.Second,
+		IdleTimeout:  60 * time.Second,
+	}
+
+	log.Printf("Server starting on port %s", cfg.Port)
+	log.Printf("Environment: %s", cfg.Environment)
+	log.Printf("Allowed origins: %v", cfg.AllowedOrigins)
+
+	if err := srv.ListenAndServe(); err != nil && err != http.ErrServerClosed {
+		log.Fatalf("Server failed to start: %v", err)
+	}
+}
+
+func setupRoutes(router *gin.Engine, authHandler *handlers.AuthHandler) {
+	// API routes
+	api := router.Group("/api")
+	{
+		api.GET("/ping", authHandler.Ping)
+		api.GET("/status", authHandler.Status)
+		api.POST("/login", authHandler.Login)
+		api.POST("/logout", authHandler.Logout)
+	}
+
+	// For backward compatibility, keep the old routes
+	router.GET("/ping", authHandler.Ping)
+	router.GET("/status", authHandler.Status)
+	router.POST("/login", authHandler.Login)
+	router.POST("/logout", authHandler.Logout)
 }

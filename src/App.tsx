@@ -6,7 +6,8 @@ import {
   Routes,
   useLocation,
 } from "react-router-dom";
-import AuthProvider, { useAuth } from "./providers/AuthProvider";
+import AuthProvider from "./providers/AuthProvider";
+import { useAuth } from "./hooks/useAuth";
 import LoginPage from "./presentation/login/page";
 import DashboardPage from "./presentation/dashboard/page";
 

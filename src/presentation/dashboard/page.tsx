@@ -1,6 +1,6 @@
 "use client";
 
-import { useAuth } from "../../providers/AuthProvider";
+import { useAuth } from "../../hooks/useAuth";
 
 export default function DashboardPage() {
   const { currentUser, logout } = useAuth();
