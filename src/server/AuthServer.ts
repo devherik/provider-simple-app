@@ -14,11 +14,27 @@ class AuthServer {
     }
 
     public async login( userName : {userName: String}, password: {password: String}): Promise<boolean> {
-        return true
+        const response = await fetch(`${AuthServer.#api}/login`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                userName: userName.userName,
+                password: password.password
+            })
+        });
+        return response.ok;
     }
     
     public async logout() {
-        return true
+        const response = await fetch(`${AuthServer.#api}/logout`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        });
+        return response.ok;
     }
 }
 export default AuthServer;
