@@ -3,7 +3,6 @@
 import React, {
   createContext,
   useCallback,
-  useContext,
   useMemo,
   useState,
 } from "react";
@@ -43,6 +42,8 @@ interface AuthContextType {
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
+export { AuthContext };
+
 export default function AuthProvider({
   children,
 }: {
@@ -61,6 +62,16 @@ export default function AuthProvider({
   // and avoids unnecessary re-instantiation.
   const server = AuthServer.instance;
 
+  const createSession = useCallback((currentUser: string) => {
+    cookie.set("session", "true", { expires: 1 })
+    cookie.set("user", currentUser, { expires: 1 })
+  }, [cookie]);
+
+  const clearSession = useCallback(() => {
+    cookie.remove("session")
+    cookie.remove("user")
+  }, [cookie]);
+
   const login = useCallback(
     async (credentials: { userName: string; password?: string }) => {
       console.log("Logging in with credentials:", credentials);
@@ -77,7 +88,7 @@ export default function AuthProvider({
         if (!data) {
           throw new Error("Login failed: Invalid credentials or server error.");
         }
-        await createSession(credentials.userName);
+        createSession(credentials.userName);
         setCurrentUser(credentials.userName);
         setIsAuthenticated(true);
         setSessionStatus("UP");
@@ -91,27 +102,17 @@ export default function AuthProvider({
         setIsLoading(false);
       }
     },
-    []
+    [createSession, server]
   );
 
   const logout = useCallback(async () => {
-    await clearSession();
+    clearSession();
     setCurrentUser(undefined);
     setIsAuthenticated(false);
     setSessionStatus("DOWN");
     setError(null);
-  }, []);
+  }, [clearSession]);
 
-
-  const createSession = async (currentUser: string) => {
-    cookie.set("session", "true", { expires: 1 })
-    cookie.set("user", currentUser, { expires: 1 })
-  };
-
-  const clearSession = async  () => {
-    cookie.remove("session")
-    cookie.remove("user")
-  };
 
   const value = useMemo(
     () => ({
@@ -125,7 +126,7 @@ export default function AuthProvider({
       error,
       sessionStatus,
     }),
-    [isAuthenticated, currentUser, login, logout, isLoading, error, sessionStatus]
+    [isAuthenticated, currentUser, login, logout, createSession, clearSession, isLoading, error, sessionStatus]
   );
 
   return (
@@ -133,12 +134,4 @@ export default function AuthProvider({
       {isLoading ? <LoadingPage /> : children}
     </AuthContext.Provider>
   );
-}
-
-export function useAuth() {
-  const context = useContext(AuthContext);
-  if (context === undefined) {
-    throw new Error("useAuth must be used within an AuthProvider");
-  }
-  return context;
 }
