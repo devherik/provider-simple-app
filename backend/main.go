@@ -3,12 +3,26 @@ package main
 import (
 	"net/http"
 
+	"github.com/gin-contrib/cors" // Import the CORS middleware
 	"github.com/gin-gonic/gin"
 )
 
 // main is the entrypoint for the application and starts the HTTP server.
 func main() {
 	router := gin.Default()
+	// Use the CORS middleware
+	config := cors.Config{
+		AllowAllOrigins: true,
+		// AllowOrigins:           []string{"http://localhost:5173/*"},
+		AllowCredentials:       true,
+		AllowMethods:           []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"},
+		AllowHeaders:           []string{"Content-Type", "Authorization"},
+		ExposeHeaders:          []string{"Content-Length"},
+		AllowBrowserExtensions: true,
+		MaxAge:                 12 * 3600, // Cache preflight response for 12 hours
+	}
+	router.Use(cors.New(config))
+
 	router.GET("/ping", func(c *gin.Context) {
 		c.JSON(http.StatusOK, gin.H{
 			"message": "pong",

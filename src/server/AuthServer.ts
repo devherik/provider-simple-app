@@ -14,27 +14,40 @@ class AuthServer {
     }
 
     public async login( userName : {userName: String}, password: {password: String}): Promise<boolean> {
-        const response = await fetch(`${AuthServer.#api}/login`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-                userName: userName.userName,
-                password: password.password
-            })
-        });
-        return response.ok;
+        try {
+            const response = await fetch(`${AuthServer.#api}login`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    
+                },
+                body: JSON.stringify({
+                    userName: userName.userName,
+                    password: password.password
+                })
+            });
+            return response.ok;
+        } catch (error) {
+            console.error("Error during login:", error);
+            throw new Error("Login failed due to an unexpected error.");
+        }
     }
     
     public async logout() {
-        const response = await fetch(`${AuthServer.#api}/logout`, {
+        try {
+            const response = await fetch(`${AuthServer.#api}logout`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
             }
-        });
-        return response.ok;
+            });
+            return response.ok;
+        } catch (error) {
+            console.error("Error during logout:", error);
+            throw new Error("Logout failed due to an unexpected error.");
+            
+        }
+        
     }
 }
 export default AuthServer;
