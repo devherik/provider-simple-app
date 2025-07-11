@@ -1,9 +1,21 @@
 "use client";
 
+import { useEffect } from "react";
 import { useAuth } from "../../hooks/useAuth";
+import { useNavigate } from "react-router-dom";
 
 export default function DashboardPage() {
-  const { currentUser, logout } = useAuth();
+  const { currentUser, logout, lookForASession } = useAuth();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    lookForASession().then((isAuthenticated) => {
+      if (!isAuthenticated) {
+        // If the user is not authenticated, redirect to the login page
+        navigate("/login");
+      }
+    });
+  }, [lookForASession, navigate]);
 
   return (
     <div className="flex flex-col items-center justify-center h-screen">

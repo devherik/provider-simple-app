@@ -36,6 +36,7 @@ interface AuthContextType {
    * @returns A promise that resolves when the logout is successful.
    */
   logout: () => void;
+  lookForASession: () => Promise<boolean>;
   isLoading?: boolean;
   error: string | null;
 }
@@ -70,6 +71,34 @@ export default function AuthProvider({
   const clearSession = useCallback(() => {
     cookie.remove("session")
     cookie.remove("user")
+  }, [cookie]);
+
+  const lookForASession = useCallback(async () => {
+    setIsLoading(true);
+    setError(null);
+    setSessionStatus("LOADING");
+    try {
+      const sessionExists = cookie.get("session") === "true";
+      const userName = cookie.get("user");
+      if (sessionExists && userName) {
+        setCurrentUser(userName);
+        setIsAuthenticated(true);
+        setSessionStatus("UP");
+        console.info("Session found for user:", userName);
+        return true;
+      } else {
+        setSessionStatus("DOWN");
+        return false;
+      }
+    } catch (err) {
+      setError(
+        err instanceof Error ? err.message : "An unknown error occurred."
+      );
+      setSessionStatus("ERROR");
+      return false;
+    } finally {
+      setIsLoading(false);
+    }
   }, [cookie]);
 
   const login = useCallback(
@@ -122,11 +151,12 @@ export default function AuthProvider({
       logout,
       createSession,
       clearSession,
+      lookForASession,
       isLoading,
       error,
       sessionStatus,
     }),
-    [isAuthenticated, currentUser, login, logout, createSession, clearSession, isLoading, error, sessionStatus]
+    [isAuthenticated, currentUser, login, logout, createSession, clearSession, lookForASession, isLoading, error, sessionStatus]
   );
 
   return (

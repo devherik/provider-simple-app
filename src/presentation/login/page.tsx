@@ -5,7 +5,7 @@ import { type FormEvent, useEffect, useState } from "react";
 import { useAuth } from "../../hooks/useAuth";
 
 export default function LoginPage() {
-  const { login, isAuthenticated } = useAuth();
+  const { login, lookForASession } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
   const [userName, setUserName] = useState("");
@@ -17,10 +17,12 @@ export default function LoginPage() {
 
   // If the user is already authenticated, redirect them away from the login page.
   useEffect(() => {
-    if (isAuthenticated) {
-      navigate(from, { replace: true });
-    }
-  }, [isAuthenticated, navigate, from]);
+    lookForASession().then((isAuthenticated) => {
+      if (isAuthenticated) {
+        navigate(from, { replace: true });
+      }
+    });
+  }, [lookForASession, navigate, from]);
 
   const handleLogin = async (event: FormEvent) => {
     event.preventDefault(); // Prevent the form from causing a page reload

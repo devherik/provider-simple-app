@@ -22,6 +22,7 @@ func NewAuthService() *AuthService {
 	return &AuthService{
 		validUsers: map[string]string{
 			"admin": "password", // In production, this would be hashed
+			"herik": "12345",
 		},
 	}
 }
