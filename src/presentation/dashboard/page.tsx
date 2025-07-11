@@ -8,10 +8,10 @@ export default function DashboardPage() {
   const { currentUser, logout, lookForASession } = useAuth();
   const navigate = useNavigate();
 
+  // If the user is not authenticated, redirect to the login page
   useEffect(() => {
     lookForASession().then((isAuthenticated) => {
       if (!isAuthenticated) {
-        // If the user is not authenticated, redirect to the login page
         navigate("/login");
       }
     });

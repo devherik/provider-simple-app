@@ -26,9 +26,13 @@ export default function LoginPage() {
 
   const handleLogin = async (event: FormEvent) => {
     event.preventDefault(); // Prevent the form from causing a page reload
+    if (!userName || userName.trim() === "") {
+      console.error("Username is required for login.");
+      return;
+    }
     await login({
       userName: userName,
-      password: password || "password", // Default password if not provided
+      password: password, // Default password if not provided
     }).catch((error) => {
       console.error("Login failed:", error);
     });
