@@ -103,7 +103,6 @@ export default function AuthProvider({
 
   const login = useCallback(
     async (credentials: { userName: string; password?: string }) => {
-      console.log("Logging in with credentials:", credentials);
       if (!credentials.userName) {
         throw new Error("Username is required for login.");
       }
@@ -135,11 +134,24 @@ export default function AuthProvider({
   );
 
   const logout = useCallback(async () => {
-    clearSession();
-    setCurrentUser(undefined);
-    setIsAuthenticated(false);
-    setSessionStatus("DOWN");
-    setError(null);
+    try {
+        const data = await server.logout();
+        if (!data) {
+          throw new Error("Login failed: Invalid credentials or server error.");
+        }
+        createSession("");
+        setCurrentUser("");
+        setIsAuthenticated(false);
+        setSessionStatus("DOWN");
+      } catch (err) {
+        setError(
+          err instanceof Error ? err.message : "An unknown error occurred."
+        );
+        setSessionStatus("ERROR");
+        throw err;
+      } finally {
+        setIsLoading(false);
+      }
   }, [clearSession]);
 
 

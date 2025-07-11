@@ -34,3 +34,5 @@ backend/*.so
 backend/*.dylib
 backend/*.test
 backend/*.out
+backend/__debug_bin2788874940
+backend/.env.example
