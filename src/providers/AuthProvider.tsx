@@ -1,20 +1,11 @@
 "use client";
 
-import React, {
-  createContext,
-  useCallback,
-  useMemo,
-  useState,
-} from "react";
+import React, { createContext, useCallback, useMemo, useState } from "react";
 import Cookies from "js-cookie";
 import AuthServer from "../server/AuthServer";
 import LoadingPage from "../presentation/loading/page";
 
-type SessionStatusType =
-  | "UP"
-  | "DOWN"
-  | "LOADING"
-  | "ERROR";
+type SessionStatusType = "UP" | "DOWN" | "LOADING" | "ERROR";
 
 interface AuthContextType {
   isAuthenticated: boolean;
@@ -54,23 +45,24 @@ export default function AuthProvider({
   const [currentUser, setCurrentUser] = useState<string | undefined>(undefined);
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
-  const [sessionStatus, setSessionStatus] = useState<SessionStatusType>(
-    "DOWN"
-  );
-  const cookie = Cookies
+  const [sessionStatus, setSessionStatus] = useState<SessionStatusType>("DOWN");
+  const cookie = Cookies;
   // Use the singleton instance of AuthServer
   // This ensures that the same instance is used across the application
   // and avoids unnecessary re-instantiation.
   const server = AuthServer.instance;
 
-  const createSession = useCallback((currentUser: string) => {
-    cookie.set("session", "true", { expires: 1 })
-    cookie.set("user", currentUser, { expires: 1 })
-  }, [cookie]);
+  const createSession = useCallback(
+    (currentUser: string) => {
+      cookie.set("session", "true", { expires: 1 });
+      cookie.set("user", currentUser, { expires: 1 });
+    },
+    [cookie]
+  );
 
   const clearSession = useCallback(() => {
-    cookie.remove("session")
-    cookie.remove("user")
+    cookie.remove("session");
+    cookie.remove("user");
   }, [cookie]);
 
   const lookForASession = useCallback(async () => {
@@ -109,51 +101,68 @@ export default function AuthProvider({
       setIsLoading(true);
       setError(null);
       setSessionStatus("LOADING");
-      try {
-        const data = await server.login(credentials, {
+      await server
+        .login(credentials, {
           password: credentials.password || "password",
+        })
+        .then((data) => {
+          if (!data) {
+            throw new Error(
+              "Login failed: Invalid credentials or server error."
+            );
+          }
+          createSession(credentials.userName);
+          setCurrentUser(credentials.userName);
+          setIsAuthenticated(true);
+          setSessionStatus("UP");
+        })
+        .catch((error) => {
+          console.error("Login failed:", error);
+          setError(
+            error instanceof Error
+              ? error.message
+              : "An unknown error occurred."
+          );
+          setSessionStatus("ERROR");
+          setIsLoading(false);
+          // Rethrow the error to be handled by the caller
+          // This allows the caller to handle the error appropriately.
+          // For example, it can display an error message to the user.
+          // This is useful for debugging and user feedback.
+          // It also ensures that the application can gracefully handle login failures.
+          throw error;
+        })
+        .finally(() => {
+          setIsLoading(false);
         });
-        if (!data) {
-          throw new Error("Login failed: Invalid credentials or server error.");
-        }
-        createSession(credentials.userName);
-        setCurrentUser(credentials.userName);
-        setIsAuthenticated(true);
-        setSessionStatus("UP");
-      } catch (err) {
-        setError(
-          err instanceof Error ? err.message : "An unknown error occurred."
-        );
-        setSessionStatus("ERROR");
-        throw err;
-      } finally {
-        setIsLoading(false);
-      }
     },
     [createSession, server]
   );
 
   const logout = useCallback(async () => {
-    try {
-        const data = await server.logout();
-        if (!data) {
-          throw new Error("Login failed: Invalid credentials or server error.");
-        }
-        createSession("");
+    setIsLoading(true);
+    setError(null);
+    setSessionStatus("LOADING");
+    await server
+      .logout()
+      .then(() => {
+        clearSession();
         setCurrentUser("");
         setIsAuthenticated(false);
         setSessionStatus("DOWN");
-      } catch (err) {
+      })
+      .catch((error) => {
+        console.error("Logout failed:", error);
         setError(
-          err instanceof Error ? err.message : "An unknown error occurred."
+          error instanceof Error ? error.message : "An unknown error occurred."
         );
         setSessionStatus("ERROR");
-        throw err;
-      } finally {
+        throw error;
+      })
+      .finally(() => {
         setIsLoading(false);
-      }
+      });
   }, [clearSession]);
-
 
   const value = useMemo(
     () => ({
@@ -168,7 +177,18 @@ export default function AuthProvider({
       error,
       sessionStatus,
     }),
-    [isAuthenticated, currentUser, login, logout, createSession, clearSession, lookForASession, isLoading, error, sessionStatus]
+    [
+      isAuthenticated,
+      currentUser,
+      login,
+      logout,
+      createSession,
+      clearSession,
+      lookForASession,
+      isLoading,
+      error,
+      sessionStatus,
+    ]
   );
 
   return (

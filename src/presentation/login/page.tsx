@@ -33,7 +33,7 @@ export default function LoginPage() {
     }
     await login({
       userName: userName,
-      password: password, // Default password if not provided
+      password: password,
     }).catch((error) => {
       console.error("Login failed:", error);
     });
