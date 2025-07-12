@@ -5,6 +5,7 @@ import { type FormEvent, useCallback, useEffect, useState } from "react";
 import { useAuth } from "../../hooks/useAuth";
 import Button from "../../components/button/Button.tsx";
 import bg_img from "../../assets/images/bg-login-img.jpg";
+import Form from "../../components/form/Form.tsx";
 
 export default function LoginPage() {
   const { login, lookForASession } = useAuth();
@@ -58,46 +59,36 @@ export default function LoginPage() {
         backgroundPosition: "center",
         backgroundRepeat: "no-repeat",
         position: "relative",
+        overflow: "hidden",
       }}
     >
+      <span style={{ position: "absolute", top: "20px", left: "20px", color: "#fffcff", fontSize: "24px", fontWeight: "bold" }}>
+        Where in Space?
+      </span>
       <div
         className={`flex flex-col items-center justify-center h-screen bg-cover bg-center`}
       >
         <div className="p-8 bg-white rounded-lg shadow-md w-full max-w-sm">
-          <h1 className="text-2xl font-bold mb-4 text-center text-gray-600">
-            Login
+          <h1 className="text-2xl font-bold mb-4 text-start text-gray-600">
+            Be welcome to the unknown universe
           </h1>
           <form onSubmit={handleLogin} className="space-y-4">
             <div>
-              <label
-                className="block text-sm font-medium mb-1 text-gray-600"
-                htmlFor="username"
-              >
-                Username
-              </label>
-              <input
-                type="text"
-                id="username"
+              <Form
+                onChange={setUserName}
                 value={userName}
-                onChange={(e) => setUserName(e.target.value)}
-                className="w-full px-3 py-2 border border-gray-300 text-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                placeholder="Enter any username"
+                id="username"
+                type="text"
+                label="Username"
               />
             </div>
             <div>
-              <label
-                className="block text-sm font-medium mb-1 text-gray-600"
-                htmlFor="password"
-              >
-                Password
-              </label>
-              <input
-                type="password"
-                id="password"
+              <Form
+                onChange={setPassword}
                 value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                className="w-full px-3 py-2 border border-gray-300 text-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                placeholder="Enter any password"
+                id="password"
+                type="password"
+                label="Password"
               />
             </div>
             <Button children="Login" onClick={handleLogin} />
