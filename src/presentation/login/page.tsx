@@ -4,6 +4,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { type FormEvent, useCallback, useEffect, useState } from "react";
 import { useAuth } from "../../hooks/useAuth";
 import Button from "../../components/button/Button.tsx";
+import bg_img from "../../assets/images/bg-login-img.jpg";
 
 export default function LoginPage() {
   const { login, lookForASession } = useAuth();
@@ -25,62 +26,83 @@ export default function LoginPage() {
     });
   }, [lookForASession, navigate, from]);
 
-  const handleLogin = useCallback(async (event: FormEvent) => {
-    event.preventDefault(); // Prevent the form from causing a page reload
-    if (!userName || userName.trim() === "") {
-      console.error("Username is required for login.");
-      return;
-    }
-    await login({
-      userName: userName,
-      password: password,
-    }).catch((error) => {
-      console.error("Login failed:", error);
-    });
-    navigate(from, { replace: true });
-  }, [login, userName, password, navigate, from]);
+  const handleLogin = useCallback(
+    async (event: FormEvent) => {
+      event.preventDefault(); // Prevent the form from causing a page reload
+      if (!userName || userName.trim() === "") {
+        console.error("Username is required for login.");
+        return;
+      }
+      await login({
+        userName: userName,
+        password: password,
+      }).catch((error) => {
+        console.error("Login failed:", error);
+      });
+      navigate(from, { replace: true });
+    },
+    [login, userName, password, navigate, from]
+  );
 
   return (
-    <div className="flex flex-col items-center justify-center h-screen">
-      <div className="p-8 bg-white rounded-lg shadow-md w-full max-w-sm">
-        <h1 className="text-2xl font-bold mb-4 text-center text-gray-600">
-          Login
-        </h1>
-        <form onSubmit={handleLogin} className="space-y-4">
-          <div>
-            <label
-              className="block text-sm font-medium mb-1 text-gray-600"
-              htmlFor="username"
-            >
-              Username
-            </label>
-            <input
-              type="text"
-              id="username"
-              value={userName}
-              onChange={(e) => setUserName(e.target.value)}
-              className="w-full px-3 py-2 border border-gray-300 text-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-              placeholder="Enter any username"
-            />
-          </div>
-          <div>
-            <label
-              className="block text-sm font-medium mb-1 text-gray-600"
-              htmlFor="password"
-            >
-              Password
-            </label>
-            <input
-              type="password"
-              id="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              className="w-full px-3 py-2 border border-gray-300 text-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-              placeholder="Enter any password"
-            />
-          </div>
-          <Button children="Login" onClick={handleLogin} />
-        </form>
+    <div
+      style={{
+        backgroundImage: `url(${bg_img})`,
+        width: "100vw",
+        minWidth: "100%",
+        maxWidth: "100%",
+        height: "100vh",
+        minHeight: "100%",
+        maxHeight: "100%",
+        backgroundSize: "cover",
+        backgroundPosition: "center",
+        backgroundRepeat: "no-repeat",
+        position: "relative",
+      }}
+    >
+      <div
+        className={`flex flex-col items-center justify-center h-screen bg-cover bg-center`}
+      >
+        <div className="p-8 bg-white rounded-lg shadow-md w-full max-w-sm">
+          <h1 className="text-2xl font-bold mb-4 text-center text-gray-600">
+            Login
+          </h1>
+          <form onSubmit={handleLogin} className="space-y-4">
+            <div>
+              <label
+                className="block text-sm font-medium mb-1 text-gray-600"
+                htmlFor="username"
+              >
+                Username
+              </label>
+              <input
+                type="text"
+                id="username"
+                value={userName}
+                onChange={(e) => setUserName(e.target.value)}
+                className="w-full px-3 py-2 border border-gray-300 text-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                placeholder="Enter any username"
+              />
+            </div>
+            <div>
+              <label
+                className="block text-sm font-medium mb-1 text-gray-600"
+                htmlFor="password"
+              >
+                Password
+              </label>
+              <input
+                type="password"
+                id="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                className="w-full px-3 py-2 border border-gray-300 text-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                placeholder="Enter any password"
+              />
+            </div>
+            <Button children="Login" onClick={handleLogin} />
+          </form>
+        </div>
       </div>
     </div>
   );
