@@ -1,8 +1,9 @@
 "use client";
 
 import { useLocation, useNavigate } from "react-router-dom";
-import { type FormEvent, useEffect, useState } from "react";
+import { type FormEvent, useCallback, useEffect, useState } from "react";
 import { useAuth } from "../../hooks/useAuth";
+import Button from "../../components/button/Button.tsx";
 
 export default function LoginPage() {
   const { login, lookForASession } = useAuth();
@@ -24,7 +25,7 @@ export default function LoginPage() {
     });
   }, [lookForASession, navigate, from]);
 
-  const handleLogin = async (event: FormEvent) => {
+  const handleLogin = useCallback(async (event: FormEvent) => {
     event.preventDefault(); // Prevent the form from causing a page reload
     if (!userName || userName.trim() === "") {
       console.error("Username is required for login.");
@@ -37,7 +38,7 @@ export default function LoginPage() {
       console.error("Login failed:", error);
     });
     navigate(from, { replace: true });
-  };
+  }, [login, userName, password, navigate, from]);
 
   return (
     <div className="flex flex-col items-center justify-center h-screen">
@@ -78,12 +79,7 @@ export default function LoginPage() {
               placeholder="Enter any password"
             />
           </div>
-          <button
-            type="submit"
-            className="w-full bg-blue-500 text-white py-2 rounded-md hover:bg-blue-600 transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
-          >
-            Log in
-          </button>
+          <Button children="Login" onClick={handleLogin} />
         </form>
       </div>
     </div>
