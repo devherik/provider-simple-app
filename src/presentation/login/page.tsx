@@ -37,10 +37,13 @@ export default function LoginPage() {
       await login({
         userName: userName,
         password: password,
-      }).catch((error) => {
-        console.error("Login failed:", error);
-      });
-      navigate(from, { replace: true });
+      })
+        .then(() => {
+          navigate(from, { replace: true });
+        })
+        .catch((error) => {
+          console.error("Login failed:", error);
+        });
     },
     [login, userName, password, navigate, from]
   );
@@ -62,15 +65,24 @@ export default function LoginPage() {
         overflow: "hidden",
       }}
     >
-      <span style={{ position: "absolute", top: "20px", left: "20px", color: "#fffcff", fontSize: "24px", fontWeight: "bold" }}>
+      <span
+        style={{
+          position: "absolute",
+          top: "20px",
+          left: "20px",
+          color: "#fffcff",
+          fontSize: "24px",
+          fontWeight: "bold",
+        }}
+      >
         Where in Space?
       </span>
       <div
         className={`flex flex-col items-center justify-center h-screen bg-cover bg-center`}
       >
         <div className="p-8 bg-white rounded-lg shadow-md w-full max-w-sm">
-          <h1 className="text-2xl font-bold mb-4 text-start text-gray-600">
-            Be welcome to the unknown universe
+          <h1 className="text-2xl font-bold mb-4 text-center text-blue-950">
+            Welcome to the universe
           </h1>
           <form onSubmit={handleLogin} className="space-y-4">
             <div>
@@ -91,7 +103,10 @@ export default function LoginPage() {
                 label="Password"
               />
             </div>
-            <Button children="Login" onClick={handleLogin} />
+            <Button
+              children="Login"
+              onClick={handleLogin}
+            />
           </form>
         </div>
       </div>
