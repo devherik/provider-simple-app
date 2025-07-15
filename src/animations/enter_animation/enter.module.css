@@ -1,5 +1,11 @@
-.fade_in {
+.fade_in_2s {
     animation: fadeIn 2s;
+}
+.fade_in_1s {
+    animation: fadeIn 1s;
+}
+.fade_in_05s {
+    animation: fadeIn 0.5s;
 }
 
 @keyframes fadeIn {

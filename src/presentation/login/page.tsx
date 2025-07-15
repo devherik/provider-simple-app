@@ -51,7 +51,7 @@ export default function LoginPage() {
   );
 
   return (
-    <EnterAnimation>
+    <EnterAnimation duration={2}>
       <div
         style={{
           backgroundImage: `url(${bg_img})`,
