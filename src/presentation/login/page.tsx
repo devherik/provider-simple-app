@@ -6,6 +6,7 @@ import { useAuth } from "../../hooks/useAuth";
 import Button from "../../components/button/Button.tsx";
 import bg_img from "../../assets/images/bg-login-img.jpg";
 import Form from "../../components/form/Form.tsx";
+import EnterAnimation from "../../animations/enter_animation/EnterAnimation.tsx";
 
 export default function LoginPage() {
   const { login, lookForASession } = useAuth();
@@ -49,68 +50,70 @@ export default function LoginPage() {
   );
 
   return (
-    <div
-      style={{
-        backgroundImage: `url(${bg_img})`,
-        width: "100vw",
-        minWidth: "100%",
-        maxWidth: "100%",
-        height: "100vh",
-        minHeight: "100%",
-        maxHeight: "100%",
-        backgroundSize: "cover",
-        backgroundPosition: "center",
-        backgroundRepeat: "no-repeat",
-        position: "relative",
-        overflow: "hidden",
-      }}
-    >
-      <span
+    <EnterAnimation>
+      <div
         style={{
-          position: "absolute",
-          top: "20px",
-          left: "20px",
-          color: "#fffcff",
-          fontSize: "24px",
-          fontWeight: "bold",
+          backgroundImage: `url(${bg_img})`,
+          width: "100vw",
+          minWidth: "100%",
+          maxWidth: "100%",
+          height: "100vh",
+          minHeight: "100%",
+          maxHeight: "100%",
+          backgroundSize: "cover",
+          backgroundPosition: "center",
+          backgroundRepeat: "no-repeat",
+          position: "relative",
+          overflow: "hidden",
         }}
       >
-        Where in Space?
-      </span>
-      <div
-        className={`flex flex-col items-center justify-center h-screen bg-cover bg-center`}
-      >
-        <div className="p-8 bg-white rounded-lg shadow-md w-full max-w-sm">
-          <h1 className="text-2xl font-bold mb-4 text-center text-blue-950">
-            Welcome to the universe
-          </h1>
-          <form onSubmit={handleLogin} className="space-y-4">
-            <div>
-              <Form
-                onChange={setUserName}
-                value={userName}
-                id="username"
-                type="text"
-                label="Username"
-              />
-            </div>
-            <div>
-              <Form
-                onChange={setPassword}
-                value={password}
-                id="password"
-                type="password"
-                label="Password"
-              />
-            </div>
-            <Button
-              children="Login"
-              onClick={handleLogin}
-            />
-          </form>
+        <span
+          style={{
+            position: "absolute",
+            top: "20px",
+            left: "20px",
+            color: "#fffcff",
+            fontSize: "24px",
+            fontWeight: "bold",
+          }}
+        >
+          Where in Space?
+        </span>
+        <div
+          className={`flex flex-col items-center justify-center h-screen bg-cover bg-center`}
+        >
+          <div
+            style={{ animation: "fadeIn 0.5s" }}
+            className="p-8 bg-white rounded-lg shadow-md w-full max-w-sm"
+          >
+            <h1 className="text-2xl font-bold mb-4 text-center text-blue-950">
+              Welcome to the universe
+            </h1>
+            <form onSubmit={handleLogin} className="space-y-4">
+              <div>
+                <Form
+                  onChange={setUserName}
+                  value={userName}
+                  id="username"
+                  type="text"
+                  label="Username"
+                />
+              </div>
+              <div>
+                <Form
+                  onChange={setPassword}
+                  value={password}
+                  id="password"
+                  type="password"
+                  label="Password"
+                />
+              </div>
+              <Button children="Login" onClick={handleLogin} />
+            </form>
+          </div>
         </div>
       </div>
-    </div>
+    </EnterAnimation>
   );
 }
 // This code defines a simple login page using React and Tailwind CSS.
