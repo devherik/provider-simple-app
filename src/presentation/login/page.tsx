@@ -7,6 +7,7 @@ import Button from "../../components/button/Button.tsx";
 import bg_img from "../../assets/images/bg-login-img.jpg";
 import Form from "../../components/form/Form.tsx";
 import EnterAnimation from "../../animations/enter_animation/EnterAnimation.tsx";
+import NeonGlowAnimation from "../../animations/neon_glow/NeonGlowAnimation.tsx";
 
 export default function LoginPage() {
   const { login, lookForASession } = useAuth();
@@ -67,18 +68,21 @@ export default function LoginPage() {
           overflow: "hidden",
         }}
       >
-        <span
-          style={{
-            position: "absolute",
-            top: "20px",
-            left: "20px",
-            color: "#fffcff",
-            fontSize: "24px",
-            fontWeight: "bold",
-          }}
-        >
-          Where in Space?
-        </span>
+        <NeonGlowAnimation>
+          <span
+            style={{
+              position: "absolute",
+              top: "20px",
+              left: "20px",
+              color: "#fffcff",
+              fontSize: "24px",
+              fontWeight: "bold",
+            }}
+          >
+            Where in Space?
+          </span>
+        </NeonGlowAnimation>
+
         <div
           className={`flex flex-col items-center justify-center h-screen bg-cover bg-center`}
         >
