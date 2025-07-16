@@ -2,9 +2,18 @@
 
 export default function LoadingPage() {
   return (
-    <div className="flex flex-col items-center justify-center h-screen">
+    <div
+      style={{
+        width: "100vw",
+        minWidth: "100%",
+        maxWidth: "100%",
+        height: "100vh",
+        minHeight: "100%",
+        maxHeight: "100%",
+      }}
+      className="flex flex-col items-center justify-center h-screen"
+    >
       <h1 className="text-3xl font-bold mb-4">Loading...</h1>
-      <p className="text-lg">Please wait while we load the content.</p>
     </div>
   );
 }
