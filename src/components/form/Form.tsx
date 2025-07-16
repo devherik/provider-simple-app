@@ -1,3 +1,7 @@
+"use client";
+
+import style from "./form.module.css";
+
 export default function Form({
   onChange,
   value,
@@ -12,21 +16,21 @@ export default function Form({
   label: string;
 }) {
   return (
-    <>
-      <label
-        className="block text-sm font-medium mb-1 text-gray-600"
-        htmlFor={id}
-      >
-        {label}
-      </label>
+    <div style={{ position: "relative", marginBottom: "40px" }}>
       <input
         type={type}
         id={id}
         value={value}
         onChange={(e) => onChange(e.target.value)}
-        className="w-full px-3 py-2 border border-gray-300 text-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-[#020202] focus:border-transparent"
-        placeholder={`Enter any ${label.toLowerCase()}`}
+        className={style.input}
+        //placeholder={`Enter any ${label.toLowerCase()}`}
       />
-    </>
+      <label
+        className={style.label}
+        htmlFor={id}
+      >
+        {label}
+      </label>
+    </div>
   );
 }

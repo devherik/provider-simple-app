@@ -65,7 +65,8 @@ export default function LoginPage() {
           backgroundPosition: "center",
           backgroundRepeat: "no-repeat",
           position: "relative",
-          overflow: "hidden",
+          overflow: "unset",
+          overflowY: "unset"
         }}
       >
         <NeonGlowAnimation>
@@ -91,7 +92,7 @@ export default function LoginPage() {
             className="p-8 bg-[#FFF8F0] rounded-lg shadow-md w-full max-w-sm"
           >
             <h1 className="text-2xl font-bold mb-4 text-center text-blue-950">
-              Choose a Planet
+              Get in
             </h1>
             {/* Add a select element here for planet selection and remove the forms */}
             <form onSubmit={handleLogin} className="space-y-4">
