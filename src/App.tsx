@@ -10,6 +10,7 @@ import AuthProvider from "./providers/AuthProvider";
 import { useAuth } from "./hooks/useAuth";
 import LoginPage from "./presentation/login/page";
 import DashboardPage from "./presentation/dashboard/page";
+import ThemeProvider from "./providers/ThemeProvider";
 
 const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
   const { isAuthenticated } = useAuth();
@@ -24,25 +25,27 @@ const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
 function App() {
   return (
     <AuthProvider>
-      <BrowserRouter basename="/">
-        <Routes>
-          {/* Public route for login */}
-          <Route path="/login" element={<LoginPage />} />
+      <ThemeProvider>
+        <BrowserRouter basename="/">
+          <Routes>
+            {/* Public route for login */}
+            <Route path="/login" element={<LoginPage />} />
 
-          {/* Protected route for the dashboard */}
-          <Route
-            path="/dashboard"
-            element={
-              <ProtectedRoute>
-                <DashboardPage />
-              </ProtectedRoute>
-            }
-          />
+            {/* Protected route for the dashboard */}
+            <Route
+              path="/dashboard"
+              element={
+                <ProtectedRoute>
+                  <DashboardPage />
+                </ProtectedRoute>
+              }
+            />
 
-          {/* Redirect root path to dashboard */}
-          <Route path="/" element={<Navigate to="/dashboard" />} />
-        </Routes>
-      </BrowserRouter>
+            {/* Redirect root path to dashboard */}
+            <Route path="/" element={<Navigate to="/dashboard" />} />
+          </Routes>
+        </BrowserRouter>
+      </ThemeProvider>
     </AuthProvider>
   );
 }
