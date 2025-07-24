@@ -6,8 +6,8 @@ import { useAuth } from "../../hooks/useAuth";
 import Button from "../../components/button/Button.tsx";
 import bg_img from "../../assets/images/bg-login-img.jpg";
 import Form from "../../components/form/Form.tsx";
-import EnterAnimation from "../../animations/enter_animation/EnterAnimation.tsx";
 import NeonGlowAnimation from "../../animations/neon_glow/NeonGlowAnimation.tsx";
+import FadeAnimation from "../../animations/fade_animation/FadeAnimation.tsx";
 
 export default function LoginPage() {
   const { login, lookForASession } = useAuth();
@@ -86,12 +86,12 @@ export default function LoginPage() {
         <div
           className={`flex flex-col items-center justify-center h-screen bg-cover bg-center`}
         >
-          <EnterAnimation duration={1}>
+          <FadeAnimation duration={2} direction="in">
             <div
               className="p-8 bg-[#FFF8F0] rounded-lg shadow-md w-full max-w-sm"
             >
-              <h1 className="text-2xl font-bold mb-4 text-center text-blue-950">
-                Get in
+              <h1 className="text-2xl font-bold mb-4 text-start text-blue-950">
+                Sign in
               </h1>
               {/* Add a select element here for planet selection and remove the forms */}
               <form onSubmit={handleLogin} className="space-y-4">
@@ -116,7 +116,7 @@ export default function LoginPage() {
                 <Button children="Login" onClick={handleLogin} />
               </form>
             </div>
-          </EnterAnimation>
+          </FadeAnimation>
         </div>
       </div>
   );
