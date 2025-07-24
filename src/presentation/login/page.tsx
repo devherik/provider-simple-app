@@ -51,7 +51,6 @@ export default function LoginPage() {
   );
 
   return (
-    <EnterAnimation duration={2}>
       <div
         style={{
           backgroundImage: `url(${bg_img})`,
@@ -66,7 +65,7 @@ export default function LoginPage() {
           backgroundRepeat: "no-repeat",
           position: "relative",
           overflow: "unset",
-          overflowY: "unset"
+          overflowY: "unset",
         }}
       >
         <NeonGlowAnimation>
@@ -87,39 +86,39 @@ export default function LoginPage() {
         <div
           className={`flex flex-col items-center justify-center h-screen bg-cover bg-center`}
         >
-          <div
-            style={{ animation: "fadeIn 0.5s" }}
-            className="p-8 bg-[#FFF8F0] rounded-lg shadow-md w-full max-w-sm"
-          >
-            <h1 className="text-2xl font-bold mb-4 text-center text-blue-950">
-              Get in
-            </h1>
-            {/* Add a select element here for planet selection and remove the forms */}
-            <form onSubmit={handleLogin} className="space-y-4">
-              <div>
-                <Form
-                  onChange={setUserName}
-                  value={userName}
-                  id="username"
-                  type="text"
-                  label="Username"
-                />
-              </div>
-              <div>
-                <Form
-                  onChange={setPassword}
-                  value={password}
-                  id="password"
-                  type="password"
-                  label="Password"
-                />
-              </div>
-              <Button children="Login" onClick={handleLogin} />
-            </form>
-          </div>
+          <EnterAnimation duration={1}>
+            <div
+              className="p-8 bg-[#FFF8F0] rounded-lg shadow-md w-full max-w-sm"
+            >
+              <h1 className="text-2xl font-bold mb-4 text-center text-blue-950">
+                Get in
+              </h1>
+              {/* Add a select element here for planet selection and remove the forms */}
+              <form onSubmit={handleLogin} className="space-y-4">
+                <div>
+                  <Form
+                    onChange={setUserName}
+                    value={userName}
+                    id="username"
+                    type="text"
+                    label="Username"
+                  />
+                </div>
+                <div>
+                  <Form
+                    onChange={setPassword}
+                    value={password}
+                    id="password"
+                    type="password"
+                    label="Password"
+                  />
+                </div>
+                <Button children="Login" onClick={handleLogin} />
+              </form>
+            </div>
+          </EnterAnimation>
         </div>
       </div>
-    </EnterAnimation>
   );
 }
 // This code defines a simple login page using React and Tailwind CSS.
