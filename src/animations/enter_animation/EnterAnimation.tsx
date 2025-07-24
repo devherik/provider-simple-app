@@ -2,25 +2,33 @@
 
 import style from "./enter.module.css";
 
-const EnterAnimation = ({ children, duration }: { children: React.ReactNode, duration: number }) => {
-    
-  let fade_in = null;
+const EnterAnimation = ({
+  children,
+  duration = 1,
+}: {
+  children: React.ReactNode;
+  duration: number;
+}) => {
+  if (duration > 2 || duration <= 0) {
+    duration = 1; // Default to 1 second if no valid duration is provided
+  }
+  let fadeIn = null;
   switch (duration) {
     case 2:
-        fade_in = style.fade_in_2s;
-        break;
+      fadeIn = style.fade_in_2s;
+      break;
     case 1:
-        fade_in = style.fade_in_1s;
-        break;
+      fadeIn = style.fade_in_1s;
+      break;
     case 0.5:
-        fade_in = style.fade_in_05s;
-        break;
+      fadeIn = style.fade_in_05s;
+      break;
     default:
-        break;
+      break;
   }
-  
-    return (
-    <div className={`${fade_in} flex items-center justify-center`}>
+
+  return (
+    <div className={`${fadeIn}`}>
       {children}
     </div>
   );

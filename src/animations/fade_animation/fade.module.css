@@ -1,0 +1,36 @@
+.fade_in_2s {
+  animation: fadeIn 2s;
+}
+.fade_in_1s {
+  animation: fadeIn 1s;
+}
+.fade_in_05s {
+  animation: fadeIn 0.5s;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+.fade_out_2s {
+  animation: fadeOut 2s;
+}
+.fade_out_1s {
+  animation: fadeOut 1s;
+}
+.fade_out_05s {
+  animation: fadeOut 0.5s;
+}
+
+@keyframes fadeOut {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}
