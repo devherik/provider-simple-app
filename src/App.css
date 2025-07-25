@@ -8,4 +8,10 @@
   background-color: #020202;
   margin: 0 auto;
   text-align: center;
+
+  --main-font: system-ui, Avenir, Helvetica, Arial, sans-serif;
+  --main-bg-color: #020202;
+  --main-text-color: #fffcff;
+  --main-border-color: #1a1a1a;
+  --main-accent-color: #ff4d4d;
 }
