@@ -88,7 +88,7 @@ export default function LoginPage() {
           className={`flex flex-col items-center justify-center h-screen bg-cover bg-center`}
         >
           <FadeAnimation duration={2} direction="in">
-            <div className="p-8 bg-[#FFF8F0] rounded-lg shadow-md w-full max-w-sm">
+            <div className="p-8 bg-[#FFFCFF] rounded-lg shadow-md w-full max-w-sm">
               <h1 className="text-2xl font-bold mb-4 text-start text-blue-950">
                 Sign in
               </h1>
