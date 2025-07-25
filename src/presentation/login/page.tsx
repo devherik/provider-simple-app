@@ -3,11 +3,13 @@
 import { useLocation, useNavigate } from "react-router-dom";
 import { type FormEvent, useCallback, useEffect, useState } from "react";
 import { useAuth } from "../../hooks/useAuth";
+import { useTheme } from "../../hooks/useTheme.ts";
 import Button from "../../components/button/Button.tsx";
 import bg_img from "../../assets/images/bg-login-img.jpg";
 import Form from "../../components/form/Form.tsx";
 import NeonGlowAnimation from "../../animations/neon_glow/NeonGlowAnimation.tsx";
 import FadeAnimation from "../../animations/fade_animation/FadeAnimation.tsx";
+import ThemeToggle from "../../components/theme_toogle/ThemeToogle.tsx";
 
 export default function LoginPage() {
   const { login, lookForASession } = useAuth();
@@ -15,6 +17,7 @@ export default function LoginPage() {
   const location = useLocation();
   const [userName, setUserName] = useState("");
   const [password, setPassword] = useState("");
+  const { currentTheme } = useTheme();
 
   // The path to redirect to after login. Get it from the router's state
   // or default to the dashboard if the user lands on /login directly.
@@ -84,12 +87,36 @@ export default function LoginPage() {
           </span>
         </NeonGlowAnimation>
 
+        <div 
+          style={{
+              position: "absolute",
+              top: "20px",
+              right: "20px",
+              color: "#fffcff",
+              fontSize: "24px",
+              fontWeight: "bold",
+            }}
+        >
+          <ThemeToggle />
+        </div>
+
         <div
           className={`flex flex-col items-center justify-center h-screen bg-cover bg-center`}
         >
           <FadeAnimation duration={2} direction="in">
-            <div className="p-8 bg-[#FFFCFF] rounded-lg shadow-md w-full max-w-sm">
-              <h1 className="text-2xl font-bold mb-4 text-start text-blue-950">
+            <div className="p-8 rounded-lg shadow-md w-full max-w-sm"
+              style={{
+                backgroundColor: currentTheme.colors.surface,
+                color: currentTheme.colors.text,
+              }}
+            >
+              <h1 style={{
+                color: currentTheme.colors.text,
+                fontSize: currentTheme.fontSizes.large,
+                fontWeight: "bold",
+                textAlign: "start",
+                marginBottom: "20px",
+              }}>
                 Sign in
               </h1>
               {/* Add a select element here for planet selection and remove the forms */}

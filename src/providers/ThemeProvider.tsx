@@ -1,6 +1,6 @@
 "use client";
 
-import React, { createContext, useMemo, useState } from "react";
+import React, { createContext, useEffect, useMemo, useState } from "react";
 
 type ThemeType = "light" | "dark";
 
@@ -78,6 +78,42 @@ export default function ThemeProvider({
   const [theme, setTheme] = useState<ThemeType>("light");
 
   const currentTheme = themes[theme];
+
+  // Apply CSS custom properties to document root for smooth transitions
+  useEffect(() => {
+    const root = document.documentElement;
+    
+    // Set CSS custom properties
+    root.style.setProperty('--primary-color', currentTheme.colors.primary);
+    root.style.setProperty('--secondary-color', currentTheme.colors.secondary);
+    root.style.setProperty('--background-color', currentTheme.colors.background);
+    root.style.setProperty('--surface-color', currentTheme.colors.surface);
+    root.style.setProperty('--text-color', currentTheme.colors.text);
+    root.style.setProperty('--accent-color', currentTheme.colors.accent);
+    
+    // Set font size custom properties
+    root.style.setProperty('--font-small', currentTheme.fontSizes.small);
+    root.style.setProperty('--font-medium', currentTheme.fontSizes.medium);
+    root.style.setProperty('--font-large', currentTheme.fontSizes.large);
+    
+    // Add transition styles to body if not already present
+    if (!document.querySelector('#theme-transitions')) {
+      const style = document.createElement('style');
+      style.id = 'theme-transitions';
+      style.textContent = `
+        * {
+          transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+        }
+        
+        body {
+          background-color: var(--background-color);
+          color: var(--text-color);
+          transition: background-color 0.3s ease, color 0.3s ease;
+        }
+      `;
+      document.head.appendChild(style);
+    }
+  }, [currentTheme]);
 
   const value = useMemo(
     () => ({ theme, setTheme, currentTheme }),

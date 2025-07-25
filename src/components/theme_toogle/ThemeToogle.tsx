@@ -1,7 +1,7 @@
 // In any component:
 import { useTheme } from "../../hooks/useTheme";
 
-function ThemeToggle() {
+export default function ThemeToggle() {
   const { theme, setTheme, currentTheme } = useTheme();
   
   return (
