@@ -6,6 +6,7 @@ type ThemeType = "light" | "dark";
 
 interface ThemeColors {
   primary: string;
+  inverted: string;
   secondary: string;
   background: string;
   surface: string;
@@ -33,6 +34,7 @@ interface ThemeContextType {
 const lightTheme: Theme = {
   colors: {
     primary: "#83C5BE",
+    inverted: "#3F3047",
     secondary: "#F0B67F",
     background: "#FFFCFF",
     surface: "#83C5BE",
@@ -49,6 +51,7 @@ const lightTheme: Theme = {
 const darkTheme: Theme = {
   colors: {
     primary: "#3F3047",
+    inverted: "#83C5BE",
     secondary: "#F0B67F",
     background: "#28282B",
     surface: "#3F3047",
@@ -85,6 +88,7 @@ export default function ThemeProvider({
     
     // Set CSS custom properties
     root.style.setProperty('--primary-color', currentTheme.colors.primary);
+    root.style.setProperty('--inverted-color', currentTheme.colors.inverted);
     root.style.setProperty('--secondary-color', currentTheme.colors.secondary);
     root.style.setProperty('--background-color', currentTheme.colors.background);
     root.style.setProperty('--surface-color', currentTheme.colors.surface);
