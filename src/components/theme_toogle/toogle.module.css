@@ -1,61 +1,42 @@
 .button {
-  background-color: var(--background-color);
-  border: 1px solid var(--background-color);
-  cursor: pointer;
-  border-radius: 1.5rem;
-  box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
+    background-color: var(--background-color);
+    border: 1px solid var(--background-color);
+    cursor: pointer;
+    border-radius: 1.5rem;
+    box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
+    display: flex;
+    padding: 0.25rem; /* Add some padding */
 }
-.toggle {
-  position: absolute;
-  width: 1.7rem;
-  height: 1.7rem;
-  background-color: var(--text-color);
-  border-radius: 50%;
-}
-.toggle.active {
-  right: 0.2rem;
-  animation: slide_in 0.3s ease-in-out;
-}
-.toggle:not(.active) {
-  left: 0.2rem;
-  animation: slide_out 0.3s ease-in-out;
-}
-@keyframes slide_in {
-  0% {
-    transform: translateX(0);
-  }
-  100% {
-    transform: translateX(100%);
-  }
-}
-@keyframes slide_out {
-  0% {
-    transform: translateX(100%);
-  }
-  100% {
-    transform: translateX(0);
-  }
-}
+
 .body {
-  position: relative;
-  display: flex;
-  align-items: center;
-  width: 4rem;
-  height: 1.7rem;
-  background-color: transparent;
-  border-radius: 1.7rem;
-  padding: 0.2rem 0.5rem;
-  transition: background-color 0.3s ease-in-out;
+    position: relative;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 4rem;
+    height: 1.7rem;
+    background-color: transparent;
+    border-radius: 1.7rem;
+    padding: 0 0.25rem; /* Add horizontal padding */
 }
+
 .body img {
-  position: absolute;
-  width: 1.2rem;
-  height: 1.2rem;
-  transition: transform 0.3s ease-in-out;
+    width: 1.2rem;
+    height: 1.2rem;
+    z-index: 1; /* Ensure icons are above the toggle background */
 }
-.body img:first-child {
-  left: 0.2rem;
+
+.toggle {
+    position: absolute;
+    left: 0;
+    width: 1.7rem;
+    height: 1.7rem;
+    background-color: var(--text-color);
+    border-radius: 50%;
+    transition: transform 0.3s ease-in-out;
+    z-index: 0; /* Place toggle background behind icons */
 }
-.body img:last-child {
-  right: 0.2rem;
+
+.toggle.active {
+    transform: translateX(calc(4rem - 1.7rem));
 }
