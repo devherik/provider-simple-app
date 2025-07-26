@@ -14,9 +14,15 @@ export default function ThemeToggle() {
       onClick={() => setTheme(theme === "light" ? "dark" : "light")}
     >
       <div className={style.body}>
-        <span className={`${style.toggle} ${theme === "dark" ? style.active : ""}`} />
-        <img src={night_icon} alt="Night Icon" />
-        <img src={day_icon} alt="Day Icon" />
+        <div className={style.icons}>
+          <img src={day_icon} alt="Day Icon" />
+          <img src={night_icon} alt="Night Icon" />
+        </div>
+        <span
+          className={`${style.toggle} ${
+            theme === "dark" ? style.active : ""
+          }`}
+        />
       </div>
     </button>
   );
