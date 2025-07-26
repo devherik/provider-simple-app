@@ -1,0 +1,12 @@
+.button {
+  background-color: transparent;
+  border: none;
+  cursor: pointer;
+  background-color: var(--primary-color);
+  border-radius: 0.25rem;
+  font-size: var(--font-small);
+  padding: 0.5rem 1rem;
+}
+.button:hover {
+  box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
+}
