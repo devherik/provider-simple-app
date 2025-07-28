@@ -40,6 +40,10 @@ export default function LoginPage() {
         console.error("Username is required for login.");
         return;
       }
+      if (!password || password.trim() === "") {
+        console.error("Password is required for login.");
+        return;
+      }
       await login({
         userName: userName,
         password: password,
@@ -120,7 +124,6 @@ export default function LoginPage() {
               >
                 Sign in
               </h1>
-              {/* Add a select element here for planet selection and remove the forms */}
               <form onSubmit={handleLogin} className="space-y-4">
                 <div>
                   <Form
