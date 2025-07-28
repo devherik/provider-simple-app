@@ -22,6 +22,11 @@ interface FontSizes {
   large: string;
 }
 
+interface ToastProps {
+  message: string;
+  type: "success" | "error" | "info";
+}
+
 interface Theme {
   colors: ThemeColors;
   fontSizes: FontSizes;
@@ -75,11 +80,6 @@ const themes: Record<ThemeType, Theme> = {
   light: lightTheme,
   dark: darkTheme,
 };
-
-interface ToastProps {
-  message: string;
-  type: "success" | "error" | "info";
-}
 
 const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
 export { ThemeContext };
