@@ -1,4 +1,4 @@
-"user server";
+"use server";
 
 class AuthServer {
     static #instance: AuthServer;
