@@ -1,4 +1,5 @@
 import type { FormEvent } from "react";
+import styles from "./button.module.css";
 
 export default function Button({
   children,
@@ -10,7 +11,7 @@ export default function Button({
   return (
     <button
       onClick={onClick}
-      className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition cursor-pointer w-full disabled:opacity-50 disabled:cursor-not-allowed"
+      className={`px-4 py-2 bg-blue-500 cursor-pointer w-full disabled:opacity-50 disabled:cursor-not-allowed ${styles.button}`}
     >
       {children}
     </button>

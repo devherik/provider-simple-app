@@ -9,6 +9,7 @@ interface ThemeColors {
   inverted: string;
   secondary: string;
   background: string;
+  glass_card: string;
   surface: string;
   text: string;
   accent: string;
@@ -37,6 +38,7 @@ const lightTheme: Theme = {
     inverted: "#3F3047",
     secondary: "#F0B67F",
     background: "#FFFCFF",
+    glass_card: "rgba(255, 252, 255, 0.3)",
     surface: "#83C5BE",
     text: "#28282B",
     accent: "#EF3054",
@@ -54,6 +56,7 @@ const darkTheme: Theme = {
     inverted: "#83C5BE",
     secondary: "#F0B67F",
     background: "#28282B",
+    glass_card: "rgba(40, 40, 43, 0.3)",
     surface: "#3F3047",
     text: "#FFFCFF",
     accent: "#EF3054",
@@ -91,6 +94,7 @@ export default function ThemeProvider({
     root.style.setProperty('--inverted-color', currentTheme.colors.inverted);
     root.style.setProperty('--secondary-color', currentTheme.colors.secondary);
     root.style.setProperty('--background-color', currentTheme.colors.background);
+    root.style.setProperty('--glass-card-color', currentTheme.colors.glass_card);
     root.style.setProperty('--surface-color', currentTheme.colors.surface);
     root.style.setProperty('--text-color', currentTheme.colors.text);
     root.style.setProperty('--accent-color', currentTheme.colors.accent);

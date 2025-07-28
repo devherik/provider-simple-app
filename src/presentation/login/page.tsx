@@ -101,7 +101,7 @@ export default function LoginPage() {
           <ThemeToggle />
         </div>
 
-        <FadeAnimation duration={2} direction="in">
+        <FadeAnimation duration={1} direction="in">
           <div
             className={`flex flex-col items-center justify-center h-screen bg-cover bg-center`}
           >
@@ -148,6 +148,3 @@ export default function LoginPage() {
     </FadeAnimation>
   );
 }
-// This code defines a simple login page using React and Tailwind CSS.
-// It includes a form with fields for username and password, and a submit button.
-// The page is styled to be centered and responsive, with a clean layout.
