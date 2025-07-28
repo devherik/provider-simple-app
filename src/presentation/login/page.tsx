@@ -106,7 +106,7 @@ export default function LoginPage() {
             className={`flex flex-col items-center justify-center h-screen bg-cover bg-center`}
           >
             <div
-              className={`${styles.glass_card} flex flex-col items-center justify-center p-8 rounded-lg`}
+              className={`${styles.glass_card} flex flex-col items-center justify-center p-8`}
             >
               <h1
                 style={{
