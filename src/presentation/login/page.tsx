@@ -10,6 +10,7 @@ import Form from "../../components/form/Form.tsx";
 import NeonGlowAnimation from "../../animations/neon_glow/NeonGlowAnimation.tsx";
 import FadeAnimation from "../../animations/fade_animation/FadeAnimation.tsx";
 import ThemeToggle from "../../components/theme_toogle/ThemeToogle.tsx";
+import styles from "./page.module.css";
 
 export default function LoginPage() {
   const { login, lookForASession } = useAuth();
@@ -87,36 +88,35 @@ export default function LoginPage() {
           </span>
         </NeonGlowAnimation>
 
-        <div 
+        <div
           style={{
-              position: "absolute",
-              top: "20px",
-              right: "20px",
-              color: "#fffcff",
-              fontSize: "24px",
-              fontWeight: "bold",
-            }}
+            position: "absolute",
+            top: "20px",
+            right: "20px",
+            color: "#fffcff",
+            fontSize: "24px",
+            fontWeight: "bold",
+          }}
         >
           <ThemeToggle />
         </div>
 
-        <div
-          className={`flex flex-col items-center justify-center h-screen bg-cover bg-center`}
-        >
-          <FadeAnimation duration={2} direction="in">
-            <div className="p-8 rounded-lg shadow-md w-full max-w-sm"
-              style={{
-                backgroundColor: currentTheme.colors.surface,
-                color: currentTheme.colors.text,
-              }}
+        <FadeAnimation duration={2} direction="in">
+          <div
+            className={`flex flex-col items-center justify-center h-screen bg-cover bg-center`}
+          >
+            <div
+              className={`${styles.glass_card} flex flex-col items-center justify-center p-8 rounded-lg`}
             >
-              <h1 style={{
-                color: currentTheme.colors.text,
-                fontSize: currentTheme.fontSizes.large,
-                fontWeight: "bold",
-                textAlign: "start",
-                marginBottom: "20px",
-              }}>
+              <h1
+                style={{
+                  color: currentTheme.colors.text,
+                  fontSize: currentTheme.fontSizes.large,
+                  fontWeight: "bold",
+                  textAlign: "start",
+                  marginBottom: "20px",
+                }}
+              >
                 Sign in
               </h1>
               {/* Add a select element here for planet selection and remove the forms */}
@@ -142,8 +142,8 @@ export default function LoginPage() {
                 <Button children="Login" onClick={handleLogin} />
               </form>
             </div>
-          </FadeAnimation>
-        </div>
+          </div>
+        </FadeAnimation>
       </div>
     </FadeAnimation>
   );

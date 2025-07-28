@@ -19,9 +19,7 @@ export default function ThemeToggle() {
           <img src={night_icon} alt="Night Icon" />
         </div>
         <span
-          className={`${style.toggle} ${
-            theme === "dark" ? style.active : ""
-          }`}
+          className={`${style.toggle} ${theme === "dark" ? style.active : ""}`}
         />
       </div>
     </button>
