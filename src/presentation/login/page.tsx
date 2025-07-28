@@ -19,6 +19,7 @@ export default function LoginPage() {
   const [userName, setUserName] = useState("");
   const [password, setPassword] = useState("");
   const { currentTheme } = useTheme();
+  const { showToast } = useTheme();
 
   // The path to redirect to after login. Get it from the router's state
   // or default to the dashboard if the user lands on /login directly.
@@ -37,10 +38,12 @@ export default function LoginPage() {
     async (event: FormEvent) => {
       event.preventDefault(); // Prevent the form from causing a page reload
       if (!userName || userName.trim() === "") {
+        showToast("Username is required for login.", "error");
         console.error("Username is required for login.");
         return;
       }
       if (!password || password.trim() === "") {
+        showToast("Password is required for login.", "error");
         console.error("Password is required for login.");
         return;
       }
@@ -52,6 +55,7 @@ export default function LoginPage() {
           navigate(from, { replace: true });
         })
         .catch((error) => {
+          showToast("Login failed. Please check your credentials.", "error");
           console.error("Login failed:", error);
         });
     },

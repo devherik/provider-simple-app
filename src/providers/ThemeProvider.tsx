@@ -1,6 +1,7 @@
 "use client";
 
 import React, { createContext, useEffect, useMemo, useState } from "react";
+import Toast from "../components/toast/Toast";
 
 type ThemeType = "light" | "dark";
 
@@ -30,6 +31,8 @@ interface ThemeContextType {
   theme: ThemeType;
   setTheme: (theme: ThemeType) => void;
   currentTheme: Theme;
+  showToast: (message: string, type: "success" | "error" | "info") => void;
+  hideToast: () => void;
 }
 
 const lightTheme: Theme = {
@@ -73,6 +76,11 @@ const themes: Record<ThemeType, Theme> = {
   dark: darkTheme,
 };
 
+interface ToastProps {
+  message: string;
+  type: "success" | "error" | "info";
+}
+
 const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
 export { ThemeContext };
 
@@ -82,32 +90,38 @@ export default function ThemeProvider({
   children: React.ReactNode;
 }) {
   const [theme, setTheme] = useState<ThemeType>("light");
-
   const currentTheme = themes[theme];
+  const [toast, setToast] = useState<ToastProps | null>(null);
 
   // Apply CSS custom properties to document root for smooth transitions
   useEffect(() => {
     const root = document.documentElement;
-    
+
     // Set CSS custom properties
-    root.style.setProperty('--primary-color', currentTheme.colors.primary);
-    root.style.setProperty('--inverted-color', currentTheme.colors.inverted);
-    root.style.setProperty('--secondary-color', currentTheme.colors.secondary);
-    root.style.setProperty('--background-color', currentTheme.colors.background);
-    root.style.setProperty('--glass-card-color', currentTheme.colors.glass_card);
-    root.style.setProperty('--surface-color', currentTheme.colors.surface);
-    root.style.setProperty('--text-color', currentTheme.colors.text);
-    root.style.setProperty('--accent-color', currentTheme.colors.accent);
-    
+    root.style.setProperty("--primary-color", currentTheme.colors.primary);
+    root.style.setProperty("--inverted-color", currentTheme.colors.inverted);
+    root.style.setProperty("--secondary-color", currentTheme.colors.secondary);
+    root.style.setProperty(
+      "--background-color",
+      currentTheme.colors.background
+    );
+    root.style.setProperty(
+      "--glass-card-color",
+      currentTheme.colors.glass_card
+    );
+    root.style.setProperty("--surface-color", currentTheme.colors.surface);
+    root.style.setProperty("--text-color", currentTheme.colors.text);
+    root.style.setProperty("--accent-color", currentTheme.colors.accent);
+
     // Set font size custom properties
-    root.style.setProperty('--font-small', currentTheme.fontSizes.small);
-    root.style.setProperty('--font-medium', currentTheme.fontSizes.medium);
-    root.style.setProperty('--font-large', currentTheme.fontSizes.large);
-    
+    root.style.setProperty("--font-small", currentTheme.fontSizes.small);
+    root.style.setProperty("--font-medium", currentTheme.fontSizes.medium);
+    root.style.setProperty("--font-large", currentTheme.fontSizes.large);
+
     // Add transition styles to body if not already present
-    if (!document.querySelector('#theme-transitions')) {
-      const style = document.createElement('style');
-      style.id = 'theme-transitions';
+    if (!document.querySelector("#theme-transitions")) {
+      const style = document.createElement("style");
+      style.id = "theme-transitions";
       style.textContent = `
         * {
           transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
@@ -123,12 +137,26 @@ export default function ThemeProvider({
     }
   }, [currentTheme]);
 
+  const showToast = (message: string, type: "success" | "error" | "info") => {
+    setToast({ message, type });
+    setTimeout(() => {
+      setToast(null);
+    }, 3000); // Hide toast after 3 seconds
+  };
+
+  const hideToast = () => {
+    setToast(null);
+  };
+
   const value = useMemo(
-    () => ({ theme, setTheme, currentTheme }),
-    [theme, currentTheme]
+    () => ({ theme, setTheme, currentTheme, showToast, hideToast }),
+    [theme, currentTheme, showToast, hideToast]
   );
 
   return (
-    <ThemeContext.Provider value={value}>{children}</ThemeContext.Provider>
+    <ThemeContext.Provider value={value}>
+      {children}
+      {toast && <Toast message={toast.message} type={toast.type} />}
+    </ThemeContext.Provider>
   );
 }

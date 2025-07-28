@@ -6,7 +6,8 @@
   display: flex;
   flex-direction: column;
   gap: 10px;
-  animation: slide 0.3s ease-in-out, fadeOut 0.3s ease-in-out 4.5s forwards;
+  transition: all 0.3s ease-in-out;
+  animation: slide 0.3s ease-in-out, fadeOut 0.3s ease-in-out 2.5s forwards;
 }
 
 .toast.success {
@@ -38,9 +39,10 @@
 @keyframes fadeOut {
   from {
     opacity: 1;
+    transform: translateY(0);
   }
   to {
     opacity: 0;
-    transform: translateY(100%);
+    transform: translateY(-20px);
   }
 }
