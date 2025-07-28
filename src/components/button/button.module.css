@@ -1,8 +1,11 @@
 .button {
-  background-color: var(--surface-color);
-  border: 1px solid var(--surface-color);
-  color: var(--text-color);
+  background-color: var(--secondary-color);
+  border: 1px solid var(--secondary-color);
+  color: #28282b;
   border-radius: 0.5rem;
+  font: 1rem var(--secondary-font);
+  align-items: center;
+  justify-content: center;
   box-shadow: rgba(17, 12, 46, 0.15) 0px 48px 100px 0px;
   display: flex;
 }

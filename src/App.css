@@ -1,17 +1,18 @@
 @import "tailwindcss";
 :root {
-  font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
+  font-family: Instrument Sans, Avenir, Helvetica, Arial, sans-serif;
   line-height: 1.5;
   font-weight: 400;
   color-scheme: light dark;
   color: #fffcff;
-  background-color: #020202;
+  background-color: #28282B;
   margin: 0 auto;
   text-align: center;
 
-  --main-font: system-ui, Avenir, Helvetica, Arial, sans-serif;
-  --main-bg-color: #020202;
+  --main-font: Instrument Serif;
+  --secondary-font: Instrument Sans;
+  --main-bg-color: #28282B;
   --main-text-color: #fffcff;
-  --main-border-color: #1a1a1a;
+  --main-border-color: #28282B;
   --main-accent-color: #ff4d4d;
 }

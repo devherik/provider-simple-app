@@ -82,6 +82,7 @@ export default function LoginPage() {
               color: "#fffcff",
               fontSize: "24px",
               fontWeight: "bold",
+              fontFamily: "var(--main-font)",
             }}
           >
             Where in Space?
@@ -139,7 +140,19 @@ export default function LoginPage() {
                     label="Password"
                   />
                 </div>
-                <Button children="Login" onClick={handleLogin} />
+                <Button
+                  children={
+                    <div className="flex items-center justify-center gap-2">
+                      <p>Login</p>
+                      <img
+                        style={{ width: "24px", height: "24px" }}
+                        src={"src/assets/icons/arrow-right-dk.svg"}
+                        alt="arrow right icon"
+                      />
+                    </div>
+                  }
+                  onClick={handleLogin}
+                />
               </form>
             </div>
           </div>
