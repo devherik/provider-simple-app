@@ -22,17 +22,17 @@
 
 .toast.success {
   background-color: #96E6B3;
-  color: white;
+  color: #28282B;
 }
 
 .toast.error {
   background-color: #EF3054;
-  color: white;
+  color: #28282B;
 }
 
 .toast.info {
   background-color: #97D2FB;
-  color: white;
+  color: #28282B;
 }
 
 @keyframes slide {
