@@ -25,3 +25,15 @@
     font-size: 12px;
     color: #9DD9D2;
 }
+.input:valid+.label {
+    top: -20px;
+    left: 0;
+    font-size: 12px;
+    color: #9DD9D2;
+}
+.input:placeholder-shown+.label {
+    top: 10px;
+    left: 5px;
+    font-size: 16px;
+    color: #392F5A;
+}

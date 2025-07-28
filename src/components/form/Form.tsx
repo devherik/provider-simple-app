@@ -22,8 +22,9 @@ export default function Form({
         id={id}
         value={value}
         onChange={(e) => onChange(e.target.value)}
+        required
+        pattern=".*\S.*" // Prevents empty input
         className={style.input}
-        //placeholder={`Enter any ${label.toLowerCase()}`}
       />
       <label
         className={style.label}
