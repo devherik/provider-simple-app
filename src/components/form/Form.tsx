@@ -18,7 +18,7 @@ export default function Form({
 }) {
   const [showPassword, setShowPassword] = useState(false);
   return (
-    <div style={{ position: "relative", marginBottom: "40px" }}>
+    <div className="flex items-center" style={{ position: "relative", marginBottom: "40px" }}>
       <input
         type={type === "password" && !showPassword ? "password" : "text"}
         id={id}
@@ -26,15 +26,15 @@ export default function Form({
         onChange={(e) => onChange(e.target.value)}
         required
         pattern=".*\S.*"
-        className={style.input}
+        className={`col-auto ${style.input}`}
       />
-      <label className={style.label} htmlFor={id}>
+      <label className={`col-auto ${style.label}`}>
         {label}
       </label>
       {type === "password" && (
         <span
           onClick={() => setShowPassword(!showPassword)}
-          className={style.toggle}
+          className={`col-auto ${style.toggle}`}
         >
           {showPassword ? (
             <img src="src/assets/icons/eye-off.svg" alt="Hide password" />
