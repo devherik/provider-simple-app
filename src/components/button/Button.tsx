@@ -11,7 +11,7 @@ export default function Button({
   return (
     <button
       onClick={onClick}
-      className={`px-4 py-2 bg-blue-500 cursor-pointer w-full disabled:opacity-50 disabled:cursor-not-allowed ${styles.button}`}
+      className={`px-4 py-2 cursor-pointer w-full disabled:opacity-50 disabled:cursor-not-allowed ${styles.button}`}
     >
       {children}
     </button>

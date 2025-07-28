@@ -1,5 +1,5 @@
 .button {
-  background-color: var(--secondary-color);
+  background-color: rgba(255, 252, 255, 0.1);
   border: 1px solid var(--secondary-color);
   color: #28282b;
   border-radius: 0.5rem;
@@ -8,4 +8,9 @@
   justify-content: center;
   box-shadow: rgba(17, 12, 46, 0.15) 0px 48px 100px 0px;
   display: flex;
+}
+
+.button:hover {
+  background-color: var(--secondary-color);
+  color: #28282b;
 }

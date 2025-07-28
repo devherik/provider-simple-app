@@ -128,8 +128,8 @@ export default function LoginPage() {
               >
                 Sign in
               </h1>
-              <form onSubmit={handleLogin} className="space-y-4">
-                <div>
+              <form onSubmit={handleLogin} className="space-y-4 w-full my-4">
+                <div className="mb-8">
                   <Form
                     onChange={setUserName}
                     value={userName}
@@ -138,7 +138,7 @@ export default function LoginPage() {
                     label="Username"
                   />
                 </div>
-                <div>
+                <div className="mb-14">
                   <Form
                     onChange={setPassword}
                     value={password}

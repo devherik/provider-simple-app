@@ -18,7 +18,7 @@ export default function Form({
 }) {
   const [showPassword, setShowPassword] = useState(false);
   return (
-    <div className="flex items-center" style={{ position: "relative", marginBottom: "40px" }}>
+    <div className="flex items-center relative w-full">
       <input
         type={type === "password" && !showPassword ? "password" : "text"}
         id={id}
