@@ -68,13 +68,13 @@ export default function Modal({
 
   return (
     <div
-      className={`fixed inset-0 z-50 flex items-center justify-center ${
+      className={`fixed inset-0 z-40 flex items-center justify-center ${
         isBluer ? styles.blur : ""
       }`}
     >
       <div
         ref={modalRef}
-        className={`bg-white absolute rounded-lg shadow-lg p-4 ${positionClass} ${styles.modal}`}
+        className={`absolute z-50 ${positionClass} ${styles.modal}`}
       >
         {children}
       </div>

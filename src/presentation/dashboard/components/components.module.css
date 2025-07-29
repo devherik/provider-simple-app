@@ -4,3 +4,14 @@
   gap: 10px;
   cursor: pointer;
 }
+
+.modalContent {
+  border-radius: 12px;
+  background-color: var(--background-color);
+  width: 300px;
+  padding: 20px;
+  display: flex;
+  text-align: start;
+  flex-direction: column;
+  gap: 10px;
+}
