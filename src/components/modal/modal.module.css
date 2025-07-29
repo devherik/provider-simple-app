@@ -8,6 +8,7 @@
 
 .modal {
   border-radius: 12px;
+  border: 1px solid var(--secondary-color);
   word-wrap: break-word;
   display: flex;
   flex-direction: column;
