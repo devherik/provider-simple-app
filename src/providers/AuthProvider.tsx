@@ -43,7 +43,7 @@ export default function AuthProvider({
   children: React.ReactNode;
 }) {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const { theme } = useTheme();
+  const { theme, showToast } = useTheme();
   const [currentUser, setCurrentUser] = useState<string | undefined>(undefined);
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
@@ -119,6 +119,7 @@ export default function AuthProvider({
           setCurrentUser(credentials.userName);
           setIsAuthenticated(true);
           setSessionStatus("UP");
+          showToast(`Welcome back, ${credentials.userName}!`, "success");
         })
         .catch((error) => {
           console.error("Login failed:", error);
@@ -154,6 +155,7 @@ export default function AuthProvider({
         setCurrentUser("");
         setIsAuthenticated(false);
         setSessionStatus("DOWN");
+        showToast("You have been logged out.", "success");
       })
       .catch((error) => {
         console.error("Logout failed:", error);
