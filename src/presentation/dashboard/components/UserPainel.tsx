@@ -28,15 +28,21 @@ export default function UserPainel({
         position="top-right"
       >
         <div className={styles.modalContent}>
-          <header className="flex items-center justify-around">
-            <img
-              src="src/assets/images/user.png"
-              alt="User Avatar"
-              className="w-12 h-12 rounded-full"
-            />
-            <div className="ml-2">
-              <h2 className="text-lg font-bold text-[var(--text-color)]">Menu</h2>
-              <p className="text-sm text-[var(--text-color)]">Welcome, {user}!</p>
+          <header className="flex items-start justify-around">
+            <div className="flex">
+              <img
+                src="src/assets/images/user.png"
+                alt="User Avatar"
+                className="w-12 h-12 rounded-full"
+              />
+              <div className="ml-2">
+                <h2 className="text-lg font-bold text-[var(--text-color)]">
+                  Menu
+                </h2>
+                <p className="text-sm text-[var(--text-color)]">
+                  Welcome, {user}!
+                </p>
+              </div>
             </div>
             <ThemeToggle />
           </header>

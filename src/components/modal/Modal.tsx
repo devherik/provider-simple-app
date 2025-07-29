@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import styles from "./modal.module.css";
 
 type PositionTypes =
@@ -23,7 +23,7 @@ export default function Modal({
   onClose,
   position = "center",
   children,
-  isBluer = true,
+  isBluer = false,
 }: {
   isOpen: boolean;
   onClose: () => void;
@@ -32,6 +32,9 @@ export default function Modal({
   isBluer?: boolean;
 }) {
   const modalRef = useRef<HTMLDivElement>(null);
+  const [isVisible, setIsVisible] = useState(false);
+  const [isClosing, setIsClosing] = useState(false);
+  
   const positionClasses = {
     "top-left": "top-4 left-4",
     "top-right": "top-4 right-4",
@@ -43,11 +46,24 @@ export default function Modal({
 
   useEffect(() => {
     if (isOpen) {
+      setIsVisible(true);
+      setIsClosing(false);
       document.body.style.overflow = "hidden"; // Prevent scrolling when modal is open
+    } else if (isVisible) {
+      // Start closing animation
+      setIsClosing(true);
+      // Hide modal after animation completes
+      const timer = setTimeout(() => {
+        setIsVisible(false);
+        setIsClosing(false);
+        document.body.style.overflow = ""; // Restore scrolling when modal is closed
+      }, 300); // Match animation duration
+      
+      return () => clearTimeout(timer);
     } else {
       document.body.style.overflow = ""; // Restore scrolling when modal is closed
     }
-  }, [isOpen]);
+  }, [isOpen, isVisible]);
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -58,13 +74,15 @@ export default function Modal({
         onClose();
       }
     };
-    document.addEventListener("mousedown", handleClickOutside);
+    if (isVisible) {
+      document.addEventListener("mousedown", handleClickOutside);
+    }
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
-  }, [isOpen]);
+  }, [isVisible, onClose]);
 
-  if (!isOpen) return null;
+  if (!isVisible) return null;
 
   return (
     <div
@@ -74,7 +92,7 @@ export default function Modal({
     >
       <div
         ref={modalRef}
-        className={`absolute z-50 ${positionClass} ${styles.modal}`}
+        className={`absolute z-50 ${positionClass} ${styles.modal} ${isClosing ? styles.hidden : ""}`}
       >
         {children}
       </div>

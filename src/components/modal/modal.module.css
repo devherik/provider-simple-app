@@ -3,6 +3,7 @@
   background-color: var(--glass-card-color);
   position: fixed;
   padding: 1rem;
+  transition: all 0.3s ease-in-out;
 }
 
 .modal {
@@ -12,4 +13,32 @@
   flex-direction: column;
   gap: 15px;
   box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
+  animation: show 0.3s ease-in-out;
+}
+
+.modal.hidden {
+  animation: hide 0.3s ease-in-out forwards;
+  pointer-events: none;
+}
+
+@keyframes show {
+  from {
+    opacity: 0;
+    transform: translateX(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes hide {
+  from {
+    opacity: 1;
+    transform: translateX(0);
+  }
+  to {
+    opacity: 0;
+    transform: translateX(20px);
+  }
 }
