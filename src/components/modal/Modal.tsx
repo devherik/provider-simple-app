@@ -40,7 +40,7 @@ export default function Modal({
     "top-right": "top-4 right-4",
     "bottom-left": "bottom-4 left-4",
     "bottom-right": "bottom-4 right-4",
-    center: "inset-0 flex items-center justify-center",
+    center: "flex items-center justify-center",
   };
   const positionClass = positionClasses[position!] || "center";
 
