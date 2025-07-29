@@ -10,6 +10,14 @@ type PositionTypes =
   | "bottom-right"
   | "center";
 
+/** * Modal component that displays content in a modal dialog.
+ * @param {boolean} isOpen - Indicates if the modal is open.
+ * @param {function} onClose - Function to call when the modal should be closed.
+ * @param {PositionTypes} position - Position of the modal on the screen (top-left, top-right, bottom-left, bottom-right, center).
+ * @param {React.ReactNode} children - Content to display inside the modal.
+ * @param {boolean} isBluer - If true, applies a blur effect to the background.
+ * @returns {JSX.Element|null} - Returns the modal JSX or null if not open.
+ */
 export default function Modal({
   isOpen,
   onClose,
