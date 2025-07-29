@@ -43,9 +43,3 @@
   padding: 20px;
 }
 
-.userButton {
-  display: flex;
-  flex-direction: row;
-  gap: 10px;
-  cursor: pointer;
-}

@@ -1,11 +1,22 @@
+type PositionTypes =
+  | "top-left"
+  | "top-right"
+  | "bottom-left"
+  | "bottom-right"
+  | "center";
+
 export default function Modal({
   isOpen,
   onClose,
+  position,
   children,
+  isBluer = true,
 }: {
   isOpen: boolean;
   onClose: () => void;
+  position: PositionTypes;
   children: React.ReactNode;
+  isBluer?: boolean;
 }) {
   if (!isOpen) return null;
 

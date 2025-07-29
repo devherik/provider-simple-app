@@ -1,7 +1,7 @@
 import { useState } from "react";
 import Button from "../../../components/button/Button";
 import Modal from "../../../components/modal/Modal";
-import styles from "../page.module.css";
+import styles from "../components/components.module.css";
 
 export default function UserPainel({
   user,
@@ -21,7 +21,7 @@ export default function UserPainel({
           className="w-16 h-16 rounded-full"
         />
       </button>
-      <Modal isOpen={isOpen} onClose={() => setIsOpen(false)}>
+      <Modal isOpen={isOpen} onClose={() => setIsOpen(false)} position="top-right">
         <h2 className="text-lg font-bold">User Menu</h2>
         <p className="text-sm">Welcome, {user}!</p>
         <ul>
