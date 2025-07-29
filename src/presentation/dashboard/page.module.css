@@ -6,6 +6,7 @@
   width: 100vw;
   min-width: 100%;
   max-width: 100%;
+  background-color: var(--background-color);
 }
 
 .header {
@@ -40,4 +41,11 @@
   align-items: center;
   justify-content: center;
   padding: 20px;
+}
+
+.userButton {
+  display: flex;
+  flex-direction: row;
+  gap: 10px;
+  cursor: pointer;
 }
