@@ -3,7 +3,7 @@ import Button from "../../../components/button/Button";
 import Modal from "../../../components/modal/Modal";
 import styles from "../page.module.css";
 
-export default function UserButton({
+export default function UserPainel({
   user,
   onLogout,
 }: {
