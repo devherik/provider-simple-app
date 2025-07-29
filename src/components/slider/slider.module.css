@@ -1,26 +1,47 @@
 .slideContainer {
   width: 100vw;
   height: 100vh;
-  background-repeat: no-repeat;
-  background-size: cover;
-  background-position: center;
   display: flex;
   align-items: center;
-  justify-content: center;
-  overflow-y: hidden;
+  justify-content: flex-start;
   overflow-x: hidden;
+  overflow-y: hidden;
+  position: relative;
+  gap: 20px;
+}
+
+.scrollTrack {
+  display: flex;
+  gap: 20px;
+  padding: 0 20px;
+}
+
+@keyframes infiniteScroll {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
 }
 
 .item {
   width: 200px;
-  height: auto;
+  height: 300px;
   max-height: 100%;
   background-repeat: no-repeat;
-  background-size: cover;
+  background-size: 100% 100%;
   background-position: center;
   background-color: var(--glass-card-color);
   z-index: 15;
   border-radius: 12px;
   box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
   transition: all 0.3s ease-in-out;
+  flex-shrink: 0;
+  cursor: pointer;
+}
+
+.item:hover {
+  transform: scale(1.05);
+  box-shadow: rgba(149, 157, 165, 0.4) 0px 12px 32px;
 }

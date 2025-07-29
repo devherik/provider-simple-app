@@ -1,30 +1,11 @@
-import { useState } from "react";
+"use client";
+
+import { useCallback, useState } from "react";
 import styles from "./slider.module.css";
 
 interface SlideItem {
   image: string;
   alt: string;
-}
-
-export function SliderItem({
-  image,
-  alt,
-  setBackgroundImage,
-}: SlideItem & { setBackgroundImage: (image: string) => void }) {
-  const [isFocused, setIsFocused] = useState(false);
-  return (
-    <div
-      className={`${styles.item} ${isFocused ? styles.focused : ""}`}
-      onClick={() => {
-        setIsFocused(!isFocused);
-        setBackgroundImage(image);
-      }}
-    >
-      <div className={styles.item}>
-        <img src={image} alt={alt} />
-      </div>
-    </div>
-  );
 }
 
 /**
@@ -36,7 +17,7 @@ export default function Slide({
 }: {
   setBackgroundImage: (image: string) => void;
 }) {
-  const items: SlideItem[] = [
+  const [items, setItems] = useState<SlideItem[]>([
     { image: "src/assets/images/planets/mercury.png", alt: "Mercury" },
     { image: "src/assets/images/planets/venus.png", alt: "Venus" },
     { image: "src/assets/images/planets/earth.png", alt: "Earth" },
@@ -45,23 +26,32 @@ export default function Slide({
     { image: "src/assets/images/planets/saturn.png", alt: "Saturn" },
     { image: "src/assets/images/planets/neptune.png", alt: "Neptune" },
     { image: "src/assets/images/planets/uranus.png", alt: "Uranus" },
-  ];
+  ]);
+
+  const updateStack = useCallback(({ index }: { index: number }) => {
+    const item = items.at(index);
+    items.splice(index, 1);
+    items.push(item!);
+    setItems(items);
+  }, []);
 
   return (
-    <div className={styles.slideContainer}>
-      <div className={styles.slide}>
-        <ul>
-          {items.map((item, index) => (
-            <li key={index}>
-              <SliderItem
-                image={item.image}
-                alt={item.alt}
-                setBackgroundImage={setBackgroundImage}
-              />
-            </li>
-          ))}
-        </ul>
-      </div>
+    <div>
+      <ul className={styles.slideContainer}>
+        {items.map((item, index) => (
+          <li key={index}>
+            <div
+              className={`${styles.item}`}
+              style={{ backgroundImage: `url(${item.image})` }}
+              onClick={() => {
+                setBackgroundImage(item.image);
+                updateStack({ index });
+              }}
+              title={item.alt}
+            />
+          </li>
+        ))}
+      </ul>
     </div>
   );
 }
