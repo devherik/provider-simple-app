@@ -4,25 +4,43 @@
   display: flex;
   align-items: center;
   justify-content: flex-start;
-  overflow-x: hidden;
+  overflow-x: auto;
   overflow-y: hidden;
   position: relative;
-  gap: 20px;
-}
-
-.scrollTrack {
-  display: flex;
+  cursor: grab;
+  user-select: none;
   gap: 20px;
   padding: 0 20px;
+  list-style: none;
+  scroll-behavior: smooth;
 }
 
-@keyframes infiniteScroll {
-  0% {
-    transform: translateX(0);
-  }
-  100% {
-    transform: translateX(-50%);
-  }
+.slideContainer::-webkit-scrollbar {
+  height: 8px;
+}
+
+.slideContainer::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.1);
+  border-radius: 4px;
+}
+
+.slideContainer::-webkit-scrollbar-thumb {
+  background: var(--primary-color);
+  border-radius: 4px;
+}
+
+.slideContainer::-webkit-scrollbar-thumb:hover {
+  background: var(--secondary-color);
+}
+
+.slideContainer.dragging {
+  cursor: grabbing;
+  scroll-behavior: auto;
+}
+
+.draggingItem {
+  opacity: 0.5;
+  transform: rotate(5deg);
 }
 
 .item {
@@ -44,4 +62,35 @@
 .item:hover {
   transform: scale(1.05);
   box-shadow: rgba(149, 157, 165, 0.4) 0px 12px 32px;
+}
+
+.item:active {
+  transform: scale(0.98);
+}
+
+.slideContainer li {
+  list-style: none;
+  transition: transform 0.2s ease;
+}
+
+.slideContainer li:hover {
+  transform: translateY(-5px);
+}
+
+.slideContainer.dragging .item {
+  pointer-events: none;
+}
+
+.slideContainer.dragging .item:hover {
+  transform: none;
+}
+
+.item.focused {
+  width: 100vw;
+  height: auto;
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 100;
+  transform: scale(1);
 }

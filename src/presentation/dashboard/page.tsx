@@ -22,8 +22,11 @@ export default function DashboardPage() {
         <header className={styles.header}>
           <UserPainel user={currentUser!} onLogout={logout} />
         </header>
-        <main className={`${styles.mainContent}`}>
-          <Slide setBackgroundImage={setBackgroundImage} />
+        <main className={`${styles.mainContent} columns-2`}>
+          <div className="aspect-auto">Ola</div>
+          <aside className="aspect-3/2">
+            <Slide setBackgroundImage={setBackgroundImage} />
+          </aside>
         </main>
       </div>
     </EnterAnimation>
