@@ -28,20 +28,17 @@ export default function UserPainel({
         position="top-right"
       >
         <div className={styles.modalContent}>
-          <header className="flex items-start justify-around">
+          <header className="flex items-center justify-center gap-4">
             <div className="flex">
               <img
                 src="src/assets/images/user.png"
                 alt="User Avatar"
-                className="w-12 h-12 rounded-full"
+                className="w-14 h-14 rounded-full col-2"
               />
               <div className="ml-2">
-                <h2 className="text-lg font-bold text-[var(--text-color)]">
-                  Menu
-                </h2>
-                <p className="text-sm text-[var(--text-color)]">
+                <h2 className="text-lg font-bold text-[var(--text-color)] col-auto">
                   Welcome, {user}!
-                </p>
+                </h2>
               </div>
             </div>
             <ThemeToggle />
@@ -51,12 +48,10 @@ export default function UserPainel({
               Here you can manage your account settings.
             </p>
           </main>
-          <footer className="mt-4 align-center justify-center">
-            <ul>
-              <li style={{ width: "200px" }}>
-                <Button onClick={onLogout}>Logout</Button>
-              </li>
-            </ul>
+          <footer className="mt-4 flex align-center justify-end">
+            <p style={{ width: "auto" }}>
+              <Button onClick={onLogout}>Logout</Button>
+            </p>
           </footer>
         </div>
       </Modal>

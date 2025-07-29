@@ -9,7 +9,6 @@ import bg_img from "../../assets/images/bg-login-img.jpg";
 import Form from "../../components/form/Form.tsx";
 import NeonGlowAnimation from "../../animations/neon_glow/NeonGlowAnimation.tsx";
 import FadeAnimation from "../../animations/fade_animation/FadeAnimation.tsx";
-import ThemeToggle from "../../components/theme_toogle/ThemeToogle.tsx";
 import styles from "./page.module.css";
 
 export default function LoginPage() {
@@ -97,20 +96,6 @@ export default function LoginPage() {
             Where in Space?
           </span>
         </NeonGlowAnimation>
-
-        <div
-          style={{
-            position: "absolute",
-            top: "20px",
-            right: "20px",
-            color: "#fffcff",
-            fontSize: "24px",
-            fontWeight: "bold",
-          }}
-        >
-          <ThemeToggle />
-        </div>
-
         <FadeAnimation duration={1} direction="in">
           <div
             className={`flex flex-col items-center justify-center h-screen bg-cover bg-center`}
