@@ -53,6 +53,7 @@ export default function LoginPage() {
       })
         .then(() => {
           navigate(from, { replace: true });
+          console.info("Login successful for user:", userName);
         })
         .catch((error) => {
           showToast("Login failed. Please check your credentials.", "error");

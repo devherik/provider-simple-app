@@ -4,23 +4,12 @@ import {
   Navigate,
   Route,
   Routes,
-  useLocation,
 } from "react-router-dom";
 import AuthProvider from "./providers/AuthProvider";
-import { useAuth } from "./hooks/useAuth";
 import LoginPage from "./presentation/login/page";
 import DashboardPage from "./presentation/dashboard/page";
 import ThemeProvider from "./providers/ThemeProvider";
-
-const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
-  const { isAuthenticated } = useAuth();
-  const location = useLocation();
-  if (!isAuthenticated) {
-    sessionStorage.setItem("redirectPath", location.pathname);
-    return <Navigate to="/login" state={{ from: location }} replace />;
-  }
-  return children;
-};
+import ProtectedRoute from "./components/auth/ProtectedRoute";
 
 function App() {
   return (

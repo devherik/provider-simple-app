@@ -56,6 +56,7 @@ export default function AuthProvider({
     (currentUser: string) => {
       cookie.set("session", "true", { expires: 1 });
       cookie.set("user", currentUser, { expires: 1 });
+      cookie.set("theme", "light", { expires: 1 });
     },
     [cookie]
   );
@@ -63,6 +64,7 @@ export default function AuthProvider({
   const clearSession = useCallback(() => {
     cookie.remove("session");
     cookie.remove("user");
+    cookie.remove("theme");
   }, [cookie]);
 
   const lookForASession = useCallback(async () => {
