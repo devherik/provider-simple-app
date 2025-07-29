@@ -4,6 +4,7 @@ import React, { createContext, useCallback, useMemo, useState } from "react";
 import Cookies from "js-cookie";
 import AuthServer from "../server/AuthServer";
 import LoadingPage from "../presentation/loading/page";
+import { useTheme } from "../hooks/useTheme";
 
 type SessionStatusType = "UP" | "DOWN" | "LOADING" | "ERROR";
 
@@ -42,6 +43,7 @@ export default function AuthProvider({
   children: React.ReactNode;
 }) {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const { theme } = useTheme();
   const [currentUser, setCurrentUser] = useState<string | undefined>(undefined);
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
@@ -56,9 +58,9 @@ export default function AuthProvider({
     (currentUser: string) => {
       cookie.set("session", "true", { expires: 1 });
       cookie.set("user", currentUser, { expires: 1 });
-      cookie.set("theme", "light", { expires: 1 });
+      cookie.set("theme", theme, { expires: undefined });
     },
-    [cookie]
+    [cookie, theme]
   );
 
   const clearSession = useCallback(() => {

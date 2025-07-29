@@ -1,10 +1,5 @@
 import "./App.css";
-import {
-  BrowserRouter,
-  Navigate,
-  Route,
-  Routes,
-} from "react-router-dom";
+import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
 import AuthProvider from "./providers/AuthProvider";
 import LoginPage from "./presentation/login/page";
 import DashboardPage from "./presentation/dashboard/page";
@@ -13,8 +8,8 @@ import ProtectedRoute from "./components/auth/ProtectedRoute";
 
 function App() {
   return (
-    <AuthProvider>
-      <ThemeProvider>
+    <ThemeProvider>
+      <AuthProvider>
         <BrowserRouter basename="/">
           <Routes>
             {/* Public route for login */}
@@ -34,8 +29,8 @@ function App() {
             <Route path="/" element={<Navigate to="/dashboard" />} />
           </Routes>
         </BrowserRouter>
-      </ThemeProvider>
-    </AuthProvider>
+      </AuthProvider>
+    </ThemeProvider>
   );
 }
 
