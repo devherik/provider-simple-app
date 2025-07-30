@@ -48,21 +48,17 @@ export default function Slide({
   // Handle mouse events for dragging
   const handleMouseDown = useCallback((e: React.MouseEvent) => {
     if (!containerRef.current) return;
+    const container = containerRef.current;
 
     // Check if the click target is an item (not the container)
     const clickedItem = (e.target as HTMLElement).closest(`.${styles.item}`);
 
     if (clickedItem) {
       // Click was on an item - find which item it was
-      const itemElements = containerRef.current.querySelectorAll(
-        `.${styles.item}`
-      );
-      const itemIndex = Array.from(itemElements).indexOf(
-        clickedItem as HTMLElement
-      );
-
+      // Using spread syntax is a concise way to convert NodeList to Array
+      const itemElements = [...container.querySelectorAll(`.${styles.item}`)];
+      const itemIndex = itemElements.indexOf(clickedItem as HTMLElement);
       if (itemIndex !== -1) {
-        // Store the clicked item info for potential click handling
         setClickedItemIndex(itemIndex);
       }
     }
@@ -70,8 +66,8 @@ export default function Slide({
     // Always set up drag state
     setIsDragging(true);
     setHasDragged(false);
-    setStartX(e.pageX - containerRef.current.offsetLeft);
-    setScrollLeft(containerRef.current.scrollLeft);
+    setStartX(e.pageX - container.offsetLeft);
+    setScrollLeft(container.scrollLeft);
   }, []);
 
   const handleMouseMove = useCallback(
