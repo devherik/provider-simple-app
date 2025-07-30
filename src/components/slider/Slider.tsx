@@ -1,8 +1,7 @@
 "use client";
 
-import { useCallback, useState, useRef, use, useEffect } from "react";
+import { useCallback, useState, useRef } from "react";
 import styles from "./slider.module.css";
-import EnterAnimation from "../../animations/enter_animation/EnterAnimation";
 
 interface SlideItem {
   image: string;
@@ -79,7 +78,6 @@ export default function Slide({
     },
   ]);
   const [focusedItem, setFocusedItem] = useState<SlideItem | null>(items[2]);
-  setBackgroundImage(focusedItem?.image || "");
   const containerRef = useRef<HTMLUListElement>(null);
   const itemRef = useRef<HTMLDivElement>(null);
   const [isDragging, setIsDragging] = useState(false);
@@ -87,12 +85,7 @@ export default function Slide({
   const [clickedItemIndex, setClickedItemIndex] = useState<number | null>(null);
   const [startX, setStartX] = useState(0);
   const [scrollLeft, setScrollLeft] = useState(0);
-
-  useEffect(() => {
-    if (focusedItem) {
-      console.info("Focused item changed:", focusedItem);
-    }
-  }, [focusedItem, setBackgroundImage]);
+  const [updatingScreen, setUpdatingScreen] = useState(false);
 
   const updateStack = useCallback(({ index }: { index: number }) => {
     setItems((prevItems) => {
@@ -142,11 +135,16 @@ export default function Slide({
 
   const handleItemClick = useCallback(
     (item: SlideItem, index: number) => {
-      setBackgroundImage(item.image);
-      setFocusedItem(item);
-      updateStack({ index });
+      setUpdatingScreen(true);
+      const timer = setTimeout(() => {
+        setUpdatingScreen(false);
+        setBackgroundImage(item.image);
+        setFocusedItem(item);
+        updateStack({ index });
+      }, 900); // Simulate a delay for the update
+      return () => clearTimeout(timer);
     },
-    [setBackgroundImage, updateStack]
+    [updateStack]
   );
 
   const handleMouseUp = useCallback(() => {
@@ -190,11 +188,13 @@ export default function Slide({
 
   return (
     <>
-      <EnterAnimation duration={0.5}>
+      <div
+        className={
+          updatingScreen ? styles.updatingFocusedItem : styles.focusedItem
+        }
+      >
         <h2 className="text-2xl font-bold mb-4">{focusedItem?.alt || ""}</h2>
-        <p className="text-gray-600 mb-4">
-          {focusedItem?.description || ""}
-        </p>
+        <p className="text-gray-600 mb-4">{focusedItem?.description || ""}</p>
         <a
           href={focusedItem?.link || "#"}
           target="_blank"
@@ -203,7 +203,7 @@ export default function Slide({
         >
           Learn more
         </a>
-      </EnterAnimation>
+      </div>
       <div className="">
         <ul
           ref={containerRef}
