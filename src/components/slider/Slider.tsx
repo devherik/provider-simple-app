@@ -2,6 +2,7 @@
 
 import { useCallback, useState, useRef } from "react";
 import styles from "./slider.module.css";
+import EnterAnimation from "../../animations/enter_animation/EnterAnimation";
 
 interface SlideItem {
   image: string;
@@ -133,7 +134,7 @@ export default function Slide({
 
   return (
     <>
-      <div className="">
+      <EnterAnimation duration={0.5}>
         <h2 className="text-2xl font-bold mb-4">Select a Planet</h2>
         <p className="text-gray-600 mb-4">
           Click or drag to select a planet. The selected planet will be set as
@@ -143,7 +144,7 @@ export default function Slide({
           Dragging will cycle through the planets. Clicking on a planet will set
           it as the background image.
         </p>
-      </div>
+      </EnterAnimation>
       <div className="">
         <ul
           ref={containerRef}

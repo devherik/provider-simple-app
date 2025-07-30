@@ -1,6 +1,9 @@
 .slideContainer {
   width: 50vw;
-  height: 100vh;
+  height: 80vh;
+  max-height: 100%;
+  max-width: 100%;
+  overflow: hidden;
   display: flex;
   align-items: center;
   justify-content: flex-start;
