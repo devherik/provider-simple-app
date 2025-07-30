@@ -1,12 +1,14 @@
 "use client";
 
-import { useCallback, useState, useRef } from "react";
+import { useCallback, useState, useRef, use, useEffect } from "react";
 import styles from "./slider.module.css";
 import EnterAnimation from "../../animations/enter_animation/EnterAnimation";
 
 interface SlideItem {
   image: string;
   alt: string;
+  description: string;
+  link: string;
 }
 
 /**
@@ -19,16 +21,65 @@ export default function Slide({
   setBackgroundImage: (image: string) => void;
 }) {
   const [items, setItems] = useState<SlideItem[]>([
-    { image: "src/assets/images/planets/mercury.png", alt: "Mercury" },
-    { image: "src/assets/images/planets/venus.png", alt: "Venus" },
-    { image: "src/assets/images/planets/earth.png", alt: "Earth" },
-    { image: "src/assets/images/planets/mars.png", alt: "Mars" },
-    { image: "src/assets/images/planets/jupiter.png", alt: "Jupiter" },
-    { image: "src/assets/images/planets/saturn.png", alt: "Saturn" },
-    { image: "src/assets/images/planets/neptune.png", alt: "Neptune" },
-    { image: "src/assets/images/planets/uranus.png", alt: "Uranus" },
+    {
+      image: "src/assets/images/planets/mercury.png",
+      alt: "Mercury",
+      description:
+        "Mercury is the planet nearest to the Sun, and the smallest planet in our solar system.",
+      link: "https://science.nasa.gov/mercury/facts/",
+    },
+    {
+      image: "src/assets/images/planets/venus.png",
+      alt: "Venus",
+      description:
+        "Venus is the second planet from the Sun, and the sixth largest planet.",
+      link: "https://science.nasa.gov/venus/facts/",
+    },
+    {
+      image: "src/assets/images/planets/earth.png",
+      alt: "Earth",
+      description:
+        "Earth – our home planet – is the third planet from the Sun, and the fifth largest planet.",
+      link: "https://science.nasa.gov/earth/facts/",
+    },
+    {
+      image: "src/assets/images/planets/mars.png",
+      alt: "Mars",
+      description:
+        "Mars is the fourth planet from the Sun, and the seventh largest planet.",
+      link: "https://science.nasa.gov/mars/facts/",
+    },
+    {
+      image: "src/assets/images/planets/jupiter.png",
+      alt: "Jupiter",
+      description:
+        "Jupiter is the fifth planet from the Sun, and the largest planet in our solar system.",
+      link: "https://science.nasa.gov/jupiter/facts/",
+    },
+    {
+      image: "src/assets/images/planets/saturn.png",
+      alt: "Saturn",
+      description:
+        "Saturn is the sixth planet from the Sun, the second largest planet in our solar system.",
+      link: "https://science.nasa.gov/saturn/facts/",
+    },
+    {
+      image: "src/assets/images/planets/uranus.png",
+      alt: "Uranus",
+      description:
+        "Uranus is the seventh planet from the Sun, and the third largest planet in our solar system.",
+      link: "https://science.nasa.gov/uranus/facts/",
+    },
+    {
+      image: "src/assets/images/planets/neptune.png",
+      alt: "Neptune",
+      description:
+        "Neptune is the eighth and most distant planet in our solar system. It's the fourth largest planet.",
+      link: "https://science.nasa.gov/neptune/facts/",
+    },
   ]);
-
+  const [focusedItem, setFocusedItem] = useState<SlideItem | null>(items[2]);
+  setBackgroundImage(focusedItem?.image || "");
   const containerRef = useRef<HTMLUListElement>(null);
   const itemRef = useRef<HTMLDivElement>(null);
   const [isDragging, setIsDragging] = useState(false);
@@ -36,6 +87,12 @@ export default function Slide({
   const [clickedItemIndex, setClickedItemIndex] = useState<number | null>(null);
   const [startX, setStartX] = useState(0);
   const [scrollLeft, setScrollLeft] = useState(0);
+
+  useEffect(() => {
+    if (focusedItem) {
+      console.info("Focused item changed:", focusedItem);
+    }
+  }, [focusedItem, setBackgroundImage]);
 
   const updateStack = useCallback(({ index }: { index: number }) => {
     setItems((prevItems) => {
@@ -86,14 +143,13 @@ export default function Slide({
   const handleItemClick = useCallback(
     (item: SlideItem, index: number) => {
       setBackgroundImage(item.image);
+      setFocusedItem(item);
       updateStack({ index });
     },
     [setBackgroundImage, updateStack]
   );
 
   const handleMouseUp = useCallback(() => {
-    console.log("Mouse up");
-
     // If we didn't drag and we have a clicked item, handle the click
     if (!hasDragged && clickedItemIndex !== null) {
       const clickedItem = items[clickedItemIndex];
@@ -135,15 +191,18 @@ export default function Slide({
   return (
     <>
       <EnterAnimation duration={0.5}>
-        <h2 className="text-2xl font-bold mb-4">Select a Planet</h2>
+        <h2 className="text-2xl font-bold mb-4">{focusedItem?.alt || ""}</h2>
         <p className="text-gray-600 mb-4">
-          Click or drag to select a planet. The selected planet will be set as
-          the background image.
+          {focusedItem?.description || ""}
         </p>
-        <p className="text-gray-600 mb-4">
-          Dragging will cycle through the planets. Clicking on a planet will set
-          it as the background image.
-        </p>
+        <a
+          href={focusedItem?.link || "#"}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="text-blue-500 hover:underline"
+        >
+          Learn more
+        </a>
       </EnterAnimation>
       <div className="">
         <ul

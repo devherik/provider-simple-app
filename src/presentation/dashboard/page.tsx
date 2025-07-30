@@ -9,9 +9,7 @@ import { useState } from "react";
 
 export default function DashboardPage() {
   const { currentUser, logout } = useAuth();
-  const [backgroundImage, setBackgroundImage] = useState(
-    "src/assets/images/planets/earth.png"
-  );
+  const [backgroundImage, setBackgroundImage] = useState("");
 
   return (
     <EnterAnimation duration={0.5}>
@@ -28,7 +26,7 @@ export default function DashboardPage() {
           <UserPainel user={currentUser!} onLogout={logout} />
         </header>
         <main className={`${styles.mainContent}`}>
-            <Slide setBackgroundImage={setBackgroundImage} />
+          <Slide setBackgroundImage={setBackgroundImage} />
         </main>
       </div>
     </EnterAnimation>
