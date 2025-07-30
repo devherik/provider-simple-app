@@ -1,16 +1,16 @@
 .slideContainer {
-  width: 100vw;
+  width: 50vw;
   height: 100vh;
   display: flex;
   align-items: center;
   justify-content: flex-start;
-  overflow-x: auto;
+  overflow-x: hidden;
   overflow-y: hidden;
   position: relative;
   cursor: grab;
   user-select: none;
   gap: 20px;
-  padding: 0 20px;
+  padding: 0 50px;
   list-style: none;
   scroll-behavior: smooth;
 }
@@ -45,7 +45,7 @@
 
 .item {
   width: 200px;
-  height: 300px;
+  height: 200px;
   max-height: 100%;
   background-repeat: no-repeat;
   background-size: 100% 100%;
@@ -60,7 +60,7 @@
 }
 
 .item:hover {
-  transform: scale(1.05);
+  transform: scale(1.5);
   box-shadow: rgba(149, 157, 165, 0.4) 0px 12px 32px;
 }
 

@@ -17,16 +17,18 @@ export default function DashboardPage() {
     <EnterAnimation duration={0.5}>
       <div
         className={styles.dashboardContainer}
-        style={{ backgroundImage: `url(${backgroundImage})` }}
+        style={{
+          backgroundImage: `url(${backgroundImage})`,
+          backgroundSize: "cover",
+          backgroundPosition: "center",
+          transition: "all 0.5s ease-in-out",
+        }}
       >
         <header className={styles.header}>
           <UserPainel user={currentUser!} onLogout={logout} />
         </header>
-        <main className={`${styles.mainContent} columns-2`}>
-          <div className="aspect-auto">Ola</div>
-          <aside className="aspect-3/2">
+        <main className={`${styles.mainContent}`}>
             <Slide setBackgroundImage={setBackgroundImage} />
-          </aside>
         </main>
       </div>
     </EnterAnimation>

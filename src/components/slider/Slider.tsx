@@ -48,21 +48,25 @@ export default function Slide({
   // Handle mouse events for dragging
   const handleMouseDown = useCallback((e: React.MouseEvent) => {
     if (!containerRef.current) return;
-    
+
     // Check if the click target is an item (not the container)
     const clickedItem = (e.target as HTMLElement).closest(`.${styles.item}`);
-    
+
     if (clickedItem) {
       // Click was on an item - find which item it was
-      const itemElements = containerRef.current.querySelectorAll(`.${styles.item}`);
-      const itemIndex = Array.from(itemElements).indexOf(clickedItem as HTMLElement);
-      
+      const itemElements = containerRef.current.querySelectorAll(
+        `.${styles.item}`
+      );
+      const itemIndex = Array.from(itemElements).indexOf(
+        clickedItem as HTMLElement
+      );
+
       if (itemIndex !== -1) {
         // Store the clicked item info for potential click handling
         setClickedItemIndex(itemIndex);
       }
     }
-    
+
     // Always set up drag state
     setIsDragging(true);
     setHasDragged(false);
@@ -84,7 +88,6 @@ export default function Slide({
 
   const handleItemClick = useCallback(
     (item: SlideItem, index: number) => {
-      console.log("Item clicked:", item, index, "hasDragged:", hasDragged);
       setBackgroundImage(item.image);
       updateStack({ index });
     },
@@ -93,7 +96,7 @@ export default function Slide({
 
   const handleMouseUp = useCallback(() => {
     console.log("Mouse up");
-    
+
     // If we didn't drag and we have a clicked item, handle the click
     if (!hasDragged && clickedItemIndex !== null) {
       const clickedItem = items[clickedItemIndex];
@@ -101,7 +104,7 @@ export default function Slide({
         handleItemClick(clickedItem, clickedItemIndex);
       }
     }
-    
+
     setIsDragging(false);
     setClickedItemIndex(null); // Reset clicked item
   }, [hasDragged, clickedItemIndex, items, handleItemClick]);
@@ -133,31 +136,44 @@ export default function Slide({
   }, []);
 
   return (
-    <div>
-      <ul
-        ref={containerRef}
-        className={`${styles.slideContainer} ${
-          isDragging ? styles.dragging : ""
-        }`}
-        onMouseDown={handleMouseDown}
-        onMouseMove={handleMouseMove}
-        onMouseUp={handleMouseUp}
-        onMouseLeave={handleMouseLeave}
-        onTouchStart={handleTouchStart}
-        onTouchMove={handleTouchMove}
-        onTouchEnd={handleTouchEnd}
-      >
-        {items.map((item, index) => (
-          <li key={`${item.alt}-${index}`}>
-            <div
-              ref={itemRef}
-              className={`${styles.item}`}
-              style={{ backgroundImage: `url(${item.image})` }}
-              title={item.alt}
-            />
-          </li>
-        ))}
-      </ul>
-    </div>
+    <>
+      <div className="">
+        <h2 className="text-2xl font-bold mb-4">Select a Planet</h2>
+        <p className="text-gray-600 mb-4">
+          Click or drag to select a planet. The selected planet will be set as
+          the background image.
+        </p>
+        <p className="text-gray-600 mb-4">
+          Dragging will cycle through the planets. Clicking on a planet will set
+          it as the background image.
+        </p>
+      </div>
+      <div className="">
+        <ul
+          ref={containerRef}
+          className={`${styles.slideContainer} ${
+            isDragging ? styles.dragging : ""
+          }`}
+          onMouseDown={handleMouseDown}
+          onMouseMove={handleMouseMove}
+          onMouseUp={handleMouseUp}
+          onMouseLeave={handleMouseLeave}
+          onTouchStart={handleTouchStart}
+          onTouchMove={handleTouchMove}
+          onTouchEnd={handleTouchEnd}
+        >
+          {items.map((item, index) => (
+            <li key={`${item.alt}-${index}`}>
+              <div
+                ref={itemRef}
+                className={`${styles.item}`}
+                style={{ backgroundImage: `url(${item.image})` }}
+                title={item.alt}
+              />
+            </li>
+          ))}
+        </ul>
+      </div>
+    </>
   );
 }
