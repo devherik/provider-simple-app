@@ -9,7 +9,9 @@ import { useState } from "react";
 
 export default function DashboardPage() {
   const { currentUser, logout } = useAuth();
-  const [backgroundImage, setBackgroundImage] = useState("");
+  const [backgroundImage, setBackgroundImage] = useState(
+    "src/assets/images/planets/earth.png"
+  );
 
   return (
     <EnterAnimation duration={0.5}>

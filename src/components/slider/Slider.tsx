@@ -2,6 +2,7 @@
 
 import { useCallback, useState, useRef } from "react";
 import styles from "./slider.module.css";
+import Button from "../button/Button";
 
 interface SlideItem {
   image: string;
@@ -189,22 +190,43 @@ export default function Slide({
   return (
     <>
       <div
+        style={{
+          width: "50vw",
+          gap: "1rem",
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          justifyContent: "center",
+          textAlign: "center",
+        }}
         className={
           updatingScreen ? styles.updatingFocusedItem : styles.focusedItem
         }
       >
-        <h2 className="text-2xl font-bold mb-4">{focusedItem?.alt || ""}</h2>
-        <p className="text-gray-600 mb-4">{focusedItem?.description || ""}</p>
-        <a
-          href={focusedItem?.link || "#"}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="text-blue-500 hover:underline"
+        <h2
+          style={{
+            color: "var(--text-color)",
+            fontFamily: "var(--main-font)",
+            fontSize: "2rem",
+          }}
         >
-          Learn more
-        </a>
+          {focusedItem?.alt || ""}
+        </h2>
+        <p style={{ color: "var(--text-color)", marginBottom: "1rem" }}>
+          {focusedItem?.description || ""}
+        </p>
+        <div style={{ width: "auto" }}>
+          <Button
+            onClick={(e) => {
+              e.stopPropagation();
+              window.open(focusedItem?.link, "_blank");
+            }}
+          >
+            Learn More
+          </Button>
+        </div>
       </div>
-      <div className="">
+      <div style={{ width: "50vw" }}>
         <ul
           ref={containerRef}
           className={`${styles.slideContainer} ${
@@ -222,7 +244,7 @@ export default function Slide({
             <li key={`${item.alt}-${index}`}>
               <div
                 ref={itemRef}
-                className={`${styles.item}`}
+                className={styles.item}
                 style={{ backgroundImage: `url(${item.image})` }}
                 title={item.alt}
               />
