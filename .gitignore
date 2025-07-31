@@ -40,3 +40,4 @@ backend/__debug_bin4290169698
 backend/__debug_bin2990636466
 backend/__debug_bin1817157710
 backend/__debug_bin2863681936
+backend/internal/services/auth.go

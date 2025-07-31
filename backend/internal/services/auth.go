@@ -13,7 +13,14 @@ import (
 var (
 	ErrInvalidCredentials = errors.New("invalid credentials")
 	ErrUserNotFound       = errors.New("user not found")
+	ErrUsernameTaken      = errors.New("username is already taken")
 )
+
+// User defines the structure for a user in the system.
+type User struct {
+	ID       int    `json:"id"`
+	Username string `json:"username"`
+}
 
 // AuthService handles authentication logic
 type AuthService struct {
@@ -50,14 +57,33 @@ func ConnectDB() (*sql.DB, error) {
 	return db, nil
 }
 
-// ValidateCredentials checks if the provided credentials are valid
+// ValidateCredentials checks if the provided username and password match a stored hash.
 func (s *AuthService) ValidateCredentials(username string, password string) error {
 	if username == "" || password == "" {
 		return ErrInvalidCredentials
 	}
 
+	/*var hashedPassword string
 	row := s.db.QueryRow("SELECT password FROM users WHERE name = ?", username)
+	if err := row.Scan(&hashedPassword); err != nil {
+		if err == sql.ErrNoRows {
+			// To prevent user enumeration attacks, you could return ErrInvalidCredentials here.
+			// Returning ErrUserNotFound is also acceptable depending on requirements.
+			return ErrInvalidCredentials
+		}
+		return fmt.Errorf("failed to query user: %w", err)
+	}
+
+	// Compare the provided password with the stored hash.
+	err := bcrypt.CompareHashAndPassword([]byte(hashedPassword), []byte(password))
+	if err != nil {
+		// This error means the password does not match.
+		log.Printf("Failed login attempt for user %s: %v", username, err)
+		return ErrInvalidCredentials
+	}*/
+
 	var expectedPassword string
+	row := s.db.QueryRow("SELECT password FROM users WHERE name = ?", username)
 	if err := row.Scan(&expectedPassword); err != nil {
 		if err == sql.ErrNoRows {
 			return ErrUserNotFound
@@ -74,39 +100,42 @@ func (s *AuthService) ValidateCredentials(username string, password string) erro
 }
 
 // GetUserByUsername retrieves user information by username
-func (s *AuthService) GetUserByUsername(username string) (map[string]interface{}, error) {
-	// This is a simplified query. In a real app, you'd select more user details.
-	var id int
-	err := s.db.QueryRow("SELECT id FROM users WHERE name = ?", username).Scan(&id)
+func (s *AuthService) GetUserByUsername(username string) (*User, error) {
+	var user User
+	user.Username = username
+	err := s.db.QueryRow("SELECT id FROM users WHERE name = ?", username).Scan(&user.ID)
 	if err != nil {
 		if err == sql.ErrNoRows {
 			return nil, ErrUserNotFound
 		}
 		return nil, fmt.Errorf("failed to get user by username: %w", err)
 	}
-
-	return map[string]interface{}{"username": username, "id": id}, nil
+	return &user, nil
 }
 
-func (s *AuthService) GetUsers() ([]map[string]any, error) {
+// GetUsers retrieves all users from the database.
+func (s *AuthService) GetUsers() ([]User, error) {
 	rows, err := s.db.Query("SELECT id, name FROM users")
 	if err != nil {
 		return nil, fmt.Errorf("failed to query users: %w", err)
 	}
 	defer rows.Close()
 
-	var users []map[string]interface{}
+	var users []User
 	for rows.Next() {
-		var id int
-		var username string
-		if err := rows.Scan(&id, &username); err != nil {
+		var user User
+		if err := rows.Scan(&user.ID, &user.Username); err != nil {
 			return nil, fmt.Errorf("failed to scan user: %w", err)
 		}
-		users = append(users, map[string]interface{}{"username": username, "id": id})
+		users = append(users, user)
 	}
 
 	if err := rows.Err(); err != nil {
 		return nil, fmt.Errorf("error iterating over users: %w", err)
+	}
+
+	if users == nil {
+		return []User{}, nil // Return empty slice instead of nil
 	}
 
 	return users, nil
