@@ -4,7 +4,7 @@ class AuthServer {
     static #instance: AuthServer;
     static #api: string;
     private constructor() {
-        AuthServer.#api = import.meta.env.VITE_API_URL
+        AuthServer.#api = import.meta.env.VITE_API_URL || "http://localhost:8080/";
     }
     public static get instance(): AuthServer {
         if (!AuthServer.#instance) {

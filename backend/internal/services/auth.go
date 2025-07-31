@@ -38,9 +38,9 @@ func NewAuthService(db *sql.DB) *AuthService {
 func ConnectDB() (*sql.DB, error) {
 	host := "localhost"
 	port := "3306"
-	user := "root_user"
-	password := "The4nerazurri"
-	dbname := "espetosdb"
+	user := "root"
+	password := "Admin@#2021"
+	dbname := "test"
 	connectionString := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s", user, password, host, port, dbname)
 
 	db, err := sql.Open("mysql", connectionString)

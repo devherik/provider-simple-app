@@ -1,159 +1,77 @@
 # Provider Simple App
 
-A full-stack web application with React frontend and Go backend.
-
-## Project Structure
-
-```
-├── backend/            # Go backend API
-│   ├── internal/       # Internal packages
-│   │   ├── config/     # Configuration management
-│   │   ├── handlers/   # HTTP handlers
-│   │   ├── middleware/ # HTTP middleware
-│   │   ├── models/     # Data models
-│   │   └── services/   # Business logic
-│   ├── main.go         # Application entry point
-│   └── README.md       # Backend documentation
-├── src/                # React frontend
-│   ├── components/     # React components
-│   ├── hooks/          # Custom React hooks
-│   ├── providers/      # Context providers
-│   ├── presentation/   # Page components
-│   └── server/         # API client
-├── public/             # Static assets
-└── package.json        # Frontend dependencies
-```
+A full-stack web application with a React frontend and a Go backend.
 
 ## Features
 
 ### Backend
-- RESTful API with Go and Gin
-- Structured logging and error handling
-- Environment-based configuration
-- CORS configuration
-- Input validation
-- Basic authentication
-- Proper project structure
-- Unit tests
+- RESTful API built with Go and the [Gin](https://gin-gonic.com/) framework.
+- Structured logging and centralized error handling.
+- Environment-based configuration for port, allowed origins, and application environment.
+- CORS middleware to handle cross-origin requests.
+- Basic authentication and user management endpoints.
+- Well-organized project structure following Go best practices.
+- Unit tests for services.
 
 ### Frontend
-- React with TypeScript
-- Authentication flow
-- Protected routes
-- Responsive design with Tailwind CSS
-- Clean architecture with hooks and providers
+- Modern frontend built with React and TypeScript.
+- Client-side routing with `react-router-dom`.
+- State management using React Hooks and Context API (`useAuth` and `useTheme`).
+- Protected routes to handle authentication flow.
+- UI components styled with CSS Modules and Tailwind CSS.
+- Animations using `animejs` and `motion`.
+- API client for communication with the backend.
 
 ## Getting Started
 
+### Prerequisites
+- [Go](https://go.dev/doc/install) (version 1.21 or later)
+- [Node.js](https://nodejs.org/en/download) (version 18 or later)
+
 ### Backend
 
+To run the backend server:
 ```bash
 cd backend
-go build -o main .
-./main
+go run main.go
 ```
-
-The backend server will start on port 8080.
+The backend server will start on port `8080` by default.
 
 ### Frontend
 
+To run the frontend application:
 ```bash
 npm install
 npm run dev
 ```
-
-The frontend will start on port 5173.
+The frontend development server will start on port `5173`.
 
 ## API Endpoints
 
-- `GET /ping` - Health check
-- `GET /status` - Server status
-- `POST /login` - User authentication
-- `POST /logout` - User logout
+All endpoints are prefixed with `/api`.
+
+- `GET /ping`: Health check to verify if the server is running.
+- `GET /status`: Provides the status of the server.
+- `POST /login`: Authenticates a user and returns a token.
+- `POST /logout`: Logs out a user.
+- `POST /users`: Retrieves a list of users.
 
 ## Configuration
 
-Backend configuration via environment variables:
-- `PORT` - Server port (default: 8080)
-- `ENVIRONMENT` - Application environment (development/production)
-- `ALLOWED_ORIGINS` - CORS allowed origins
+The backend can be configured using environment variables:
+
+- `PORT`: The port for the server to listen on. (Default: `8080`)
+- `ENVIRONMENT`: The application environment (`development` or `production`). (Default: `development`)
+- `ALLOWED_ORIGINS`: A comma-separated list of allowed origins for CORS. (Default: `http://localhost:5173`)
 
 ## Security Notes
 
-This is a demo application. For production use:
-- Implement proper JWT authentication
-- Use secure password hashing
-- Add rate limiting
-- Use HTTPS
-- Implement proper session management
-- Add input sanitization
+This is a demonstration application and is not intended for production use without further security enhancements. For a production environment, consider the following:
 
-## React + TypeScript + Vite
+- Implement robust JWT-based authentication with refresh tokens.
+- Use a secure method for password hashing (e.g., bcrypt).
+- Add rate limiting to protect against brute-force attacks.
+- Use HTTPS to encrypt communication.
+- Implement comprehensive session management.
+- Sanitize all user inputs to prevent injection attacks.
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
-
-Currently, two official plugins are available:
-
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
-
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
-
-```js
-export default tseslint.config([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-
-      // Remove tseslint.configs.recommended and replace with this
-      ...tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      ...tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      ...tseslint.configs.stylisticTypeChecked,
-
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
-
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
-
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
-
-export default tseslint.config([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
