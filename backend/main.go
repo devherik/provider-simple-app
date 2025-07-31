@@ -22,8 +22,15 @@ func main() {
 		gin.SetMode(gin.ReleaseMode)
 	}
 
+	// Connect to the database
+	db, err := services.ConnectDB()
+	if err != nil {
+		log.Fatalf("Failed to connect to database: %v", err)
+	}
+	defer db.Close()
+
 	// Initialize services
-	authService := services.NewAuthService()
+	authService := services.NewAuthService(db)
 
 	// Initialize handlers
 	authHandler := handlers.NewAuthHandler(authService)
@@ -66,6 +73,7 @@ func setupRoutes(router *gin.Engine, authHandler *handlers.AuthHandler) {
 		api.GET("/status", authHandler.Status)
 		api.POST("/login", authHandler.Login)
 		api.POST("/logout", authHandler.Logout)
+		api.POST("/users", authHandler.GetUsers)
 	}
 
 	// For backward compatibility, keep the old routes
@@ -73,4 +81,5 @@ func setupRoutes(router *gin.Engine, authHandler *handlers.AuthHandler) {
 	router.GET("/status", authHandler.Status)
 	router.POST("/login", authHandler.Login)
 	router.POST("/logout", authHandler.Logout)
+	router.POST("/users", authHandler.GetUsers)
 }

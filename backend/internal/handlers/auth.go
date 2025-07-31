@@ -61,3 +61,16 @@ func (h *AuthHandler) Status(c *gin.Context) {
 		"status": "Server is running",
 	})
 }
+
+func (h *AuthHandler) GetUsers(c *gin.Context) {
+	users, err := h.authService.GetUsers()
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, models.ErrorResponse{
+			Error:   "internal_error",
+			Message: "Failed to retrieve users",
+		})
+		return
+	}
+
+	c.JSON(http.StatusOK, users)
+}
