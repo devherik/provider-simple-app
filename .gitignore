@@ -35,4 +35,3 @@ backend/*.dylib
 backend/*.test
 backend/*.out
 backend/__debug_*
-backend/internal/services/auth.go
