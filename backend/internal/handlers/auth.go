@@ -2,20 +2,25 @@ package handlers
 
 import (
 	"net/http"
+	"time"
 
+	"provider-simple-app-backend/internal/config"
 	"provider-simple-app-backend/internal/models"
 	"provider-simple-app-backend/internal/services"
 
 	"github.com/gin-gonic/gin"
+	"github.com/golang-jwt/jwt/v5"
 )
 
 type AuthHandler struct {
 	authService *services.AuthService
+	cfg         *config.Config
 }
 
-func NewAuthHandler(authService *services.AuthService) *AuthHandler {
+func NewAuthHandler(authService *services.AuthService, cfg *config.Config) *AuthHandler {
 	return &AuthHandler{
 		authService: authService,
+		cfg:         cfg,
 	}
 }
 
@@ -38,8 +43,28 @@ func (h *AuthHandler) Login(c *gin.Context) {
 		return
 	}
 
+	expirationTime := time.Now().Add(24 * time.Hour)
+
+	claims := &models.Claims{
+		Username: req.Username,
+		RegisteredClaims: jwt.RegisteredClaims{
+			ExpiresAt: &jwt.NumericDate{Time: expirationTime},
+		},
+	}
+
+	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
+	tokenString, err := token.SignedString([]byte(h.cfg.JWTKey))
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, models.ErrorResponse{
+			Error:   "internal_error",
+			Message: "Failed to generate token",
+		})
+		return
+	}
+
 	c.JSON(http.StatusOK, models.LoginResponse{
 		Message: "Login successful",
+		Token:   tokenString,
 	})
 }
 
@@ -95,4 +120,26 @@ func (h *AuthHandler) CreateUser(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusCreated, user)
+}
+
+func (h *AuthHandler) GetUser(c *gin.Context) {
+	username := c.Param("username")
+	if username == "" {
+		c.JSON(http.StatusBadRequest, models.ErrorResponse{
+			Error:   "validation_error",
+			Message: "Username is required",
+		})
+		return
+	}
+
+	user, err := h.authService.GetUserByUsername(username)
+	if err != nil {
+		c.JSON(http.StatusNotFound, models.ErrorResponse{
+			Error:   "user_not_found",
+			Message: "User not found",
+		})
+		return
+	}
+
+	c.JSON(http.StatusOK, user)
 }

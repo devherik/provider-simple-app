@@ -35,7 +35,7 @@ func main() {
 	authService := services.NewAuthService(db)
 
 	// Initialize handlers
-	authHandler := handlers.NewAuthHandler(authService)
+	authHandler := handlers.NewAuthHandler(authService, cfg)
 
 	// Setup router
 	router := gin.New()
@@ -46,7 +46,7 @@ func main() {
 	router.Use(middleware.SetupCORS(cfg))
 
 	// Setup routes
-	setupRoutes(router, authHandler)
+	setupRoutes(router, authHandler, cfg)
 
 	// Create server
 	srv := &http.Server{
@@ -67,23 +67,21 @@ func main() {
 	}
 }
 
-func setupRoutes(router *gin.Engine, authHandler *handlers.AuthHandler) {
+func setupRoutes(router *gin.Engine, authHandler *handlers.AuthHandler, cfg *config.Config) {
 	// API routes
-	api := router.Group("/api")
+	api := router.Group("/api").Use(middleware.Auth(cfg))
 	{
-		api.GET("/ping", authHandler.Ping)
-		api.GET("/status", authHandler.Status)
-		api.POST("/login", authHandler.Login)
-		api.POST("/logout", authHandler.Logout)
-		api.POST("/users", authHandler.GetUsers)
-		api.POST("/users/create", authHandler.CreateUser)
+		api.POST("/user", authHandler.GetUser)
 	}
 
 	// For backward compatibility, keep the old routes
-	router.GET("/ping", authHandler.Ping)
-	router.GET("/status", authHandler.Status)
-	router.POST("/login", authHandler.Login)
-	router.POST("/logout", authHandler.Logout)
-	router.POST("/users", authHandler.GetUsers)
-	router.POST("/users/create", authHandler.CreateUser)
+	root := router.Group("/")
+	{
+		root.GET("/ping", authHandler.Ping)
+		root.GET("/status", authHandler.Status)
+		root.POST("/login", authHandler.Login)
+		root.POST("/logout", authHandler.Logout)
+		root.POST("/users", authHandler.GetUsers)
+		root.POST("/users/create", authHandler.CreateUser)
+	}
 }

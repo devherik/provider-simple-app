@@ -5,9 +5,11 @@ import (
 	"time"
 
 	"provider-simple-app-backend/internal/config"
+	"provider-simple-app-backend/internal/models"
 
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
+	"github.com/golang-jwt/jwt/v5"
 )
 
 // SetupCORS configures CORS middleware with proper security settings
@@ -28,6 +30,33 @@ func SetupCORS(cfg *config.Config) gin.HandlerFunc {
 	}
 
 	return cors.New(config)
+}
+
+func Auth(cfg *config.Config) gin.HandlerFunc {
+	return func(c *gin.Context) {
+		authHeader := c.GetHeader("Authorization")
+		if authHeader == "" {
+			c.JSON(401, gin.H{"error": "unauthorized", "message": "Authorization header is required"})
+			c.Abort()
+			return
+		}
+
+		tokenString := authHeader[len("Bearer "):]
+		claims := &models.Claims{}
+
+		token, err := jwt.ParseWithClaims(tokenString, claims, func(tokenString *jwt.Token) (interface{}, error) {
+			return []byte(cfg.JWTKey), nil
+		})
+
+		if err != nil || !token.Valid {
+			c.JSON(401, gin.H{"error": "unauthorized", "message": "Invalid or expired token"})
+			c.Abort()
+			return
+		}
+
+		c.Set("username", claims.Username)
+		c.Next()
+	}
 }
 
 // Logger provides structured logging for requests

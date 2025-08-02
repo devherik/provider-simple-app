@@ -10,6 +10,7 @@ type Config struct {
 	AllowedOrigins []string
 	Environment    string
 	DatabaseURL    string
+	JWTKey         string
 }
 
 func New() *Config {
@@ -26,6 +27,7 @@ func New() *Config {
 		AllowedOrigins: []string{getEnv("ALLOWED_ORIGINS", "http://localhost:5173")},
 		Environment:    getEnv("ENVIRONMENT", "development"),
 		DatabaseURL:    getEnv("DATABASE_URL", databaseURL),
+		JWTKey:         getEnv("JWT_KEY", "your_secret_key"),
 	}
 }
 
