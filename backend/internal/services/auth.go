@@ -2,7 +2,6 @@ package services
 
 import (
 	"context"
-	"crypto/subtle"
 	"database/sql"
 	"errors"
 	"fmt"
@@ -22,6 +21,7 @@ var (
 type User struct {
 	ID       int    `json:"id"`
 	Username string `json:"username"`
+	Theme    string `json:"theme"`
 }
 
 // AuthService handles authentication logic
@@ -79,11 +79,6 @@ func (s *AuthService) ValidateCredentials(username string, password string) erro
 		return ErrInvalidCredentials
 	}
 
-	// Use constant time comparison to prevent timing attacks
-	if subtle.ConstantTimeCompare([]byte(password), []byte(hashedPassword)) != 1 {
-		return ErrInvalidCredentials
-	}
-
 	return nil
 }
 
@@ -107,6 +102,7 @@ func (s *AuthService) CreateUser(username, password, theme string) (*User, error
 	}
 
 	user.Username = username
+	user.Theme = theme
 	return &user, nil
 }
 
