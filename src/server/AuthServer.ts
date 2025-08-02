@@ -49,5 +49,25 @@ class AuthServer {
         }
         
     }
+
+    public async createUser( userName : {userName: string}, password: {password: string}, theme: {theme: string}): Promise<boolean> {
+        try {
+            const response = await fetch(`${AuthServer.#api}api/users/create`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    userName: userName.userName,
+                    password: password.password,
+                    theme: theme.theme
+                })
+            });
+            return response.ok;
+        } catch (error) {   
+            console.error("Error during user creation:", error);
+            throw new Error("User creation failed due to an unexpected error.");
+        }
+    }
 }
 export default AuthServer;
