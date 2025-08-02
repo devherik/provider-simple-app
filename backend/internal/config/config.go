@@ -13,11 +13,19 @@ type Config struct {
 }
 
 func New() *Config {
+	dbHost := getEnv("DB_HOST", "localhost")
+	dbPort := getEnv("DB_PORT", "5432")
+	dbUser := getEnv("DB_USER", "user")
+	dbPassword := getEnv("DB_PASSWORD", "password")
+	dbName := getEnv("DB_NAME", "mydb")
+
+	databaseURL := "postgres://" + dbUser + ":" + dbPassword + "@" + dbHost + ":" + dbPort + "/" + dbName + "?sslmode=disable"
+
 	return &Config{
 		Port:           getEnv("PORT", "8080"),
 		AllowedOrigins: []string{getEnv("ALLOWED_ORIGINS", "http://localhost:5173")},
 		Environment:    getEnv("ENVIRONMENT", "development"),
-		DatabaseURL:    getEnv("DATABASE_URL", "postgres://user:password@localhost:5432/dbname"),
+		DatabaseURL:    getEnv("DATABASE_URL", databaseURL),
 	}
 }
 
