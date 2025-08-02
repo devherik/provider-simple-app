@@ -35,3 +35,4 @@ backend/*.dylib
 backend/*.test
 backend/*.out
 backend/__debug_*
+docker-compose.yaml

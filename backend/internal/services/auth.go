@@ -8,6 +8,7 @@ import (
 	"log"
 
 	_ "github.com/go-sql-driver/mysql"
+	_ "github.com/jackc/pgx/v5"
 )
 
 var (
@@ -37,16 +38,17 @@ func NewAuthService(db *sql.DB) *AuthService {
 // ConnectDB establishes a connection to the database
 func ConnectDB() (*sql.DB, error) {
 	host := "localhost"
-	port := "3306"
+	port := "5432"
 	/*user := "root"
 	password := "Admin@#2021"
 	dbname := "test"*/
-	user := "root_user"
-	password := "The4nerazurri"
-	dbname := "espetosdb"
-	connectionString := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s", user, password, host, port, dbname)
+	user := "user"
+	password := "password"
+	dbname := "mydb"
+	connectionString := fmt.Sprintf("host=%s port=%s user=%s password=%s dbname=%s sslmode=disable",
+		host, port, user, password, dbname)
 
-	db, err := sql.Open("mysql", connectionString)
+	db, err := sql.Open("pgx", connectionString)
 	if err != nil {
 		return nil, fmt.Errorf("failed to open database connection: %w", err)
 	}
