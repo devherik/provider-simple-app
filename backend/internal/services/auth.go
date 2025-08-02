@@ -1,14 +1,14 @@
 package services
 
 import (
+	"context"
 	"crypto/subtle"
 	"database/sql"
 	"errors"
 	"fmt"
 	"log"
 
-	_ "github.com/go-sql-driver/mysql"
-	_ "github.com/jackc/pgx/v5"
+	"github.com/jackc/pgx/v5/pgxpool"
 )
 
 var (
@@ -25,35 +25,28 @@ type User struct {
 
 // AuthService handles authentication logic
 type AuthService struct {
-	db *sql.DB
+	db *pgxpool.Pool
 }
 
 // NewAuthService creates a new authentication service
-func NewAuthService(db *sql.DB) *AuthService {
+func NewAuthService(db *pgxpool.Pool) *AuthService {
 	return &AuthService{
 		db: db,
 	}
 }
 
 // ConnectDB establishes a connection to the database
-func ConnectDB() (*sql.DB, error) {
-	host := "localhost"
-	port := "5432"
-	/*user := "root"
-	password := "Admin@#2021"
-	dbname := "test"*/
-	user := "user"
-	password := "password"
-	dbname := "mydb"
-	connectionString := fmt.Sprintf("host=%s port=%s user=%s password=%s dbname=%s sslmode=disable",
-		host, port, user, password, dbname)
+func ConnectDB(dbURL string) (*pgxpool.Pool, error) {
+	if dbURL == "" {
+		return nil, errors.New("DATABASE_URL environment variable not set")
+	}
 
-	db, err := sql.Open("pgx", connectionString)
+	db, err := pgxpool.New(context.Background(), dbURL)
 	if err != nil {
 		return nil, fmt.Errorf("failed to open database connection: %w", err)
 	}
 
-	if err := db.Ping(); err != nil {
+	if err := db.Ping(context.Background()); err != nil {
 		db.Close()
 		return nil, fmt.Errorf("failed to ping database: %w", err)
 	}
@@ -69,7 +62,7 @@ func (s *AuthService) ValidateCredentials(username string, password string) erro
 	}
 
 	/*var hashedPassword string
-	row := s.db.QueryRow("SELECT password FROM users WHERE name = ?", username)
+	row := s.db.QueryRow(context.Background(), "SELECT password FROM users WHERE name = $1", username)
 	if err := row.Scan(&hashedPassword); err != nil {
 		if err == sql.ErrNoRows {
 			// To prevent user enumeration attacks, you could return ErrInvalidCredentials here.
@@ -88,7 +81,7 @@ func (s *AuthService) ValidateCredentials(username string, password string) erro
 	}*/
 
 	var expectedPassword string
-	row := s.db.QueryRow("SELECT password FROM users WHERE name = ?", username)
+	row := s.db.QueryRow(context.Background(), "SELECT password FROM users WHERE name = $1", username)
 	if err := row.Scan(&expectedPassword); err != nil {
 		if err == sql.ErrNoRows {
 			return ErrUserNotFound
@@ -108,7 +101,7 @@ func (s *AuthService) ValidateCredentials(username string, password string) erro
 func (s *AuthService) GetUserByUsername(username string) (*User, error) {
 	var user User
 	user.Username = username
-	err := s.db.QueryRow("SELECT id FROM users WHERE name = ?", username).Scan(&user.ID)
+	err := s.db.QueryRow(context.Background(), "SELECT id FROM users WHERE name = $1", username).Scan(&user.ID)
 	if err != nil {
 		if err == sql.ErrNoRows {
 			return nil, ErrUserNotFound
@@ -120,7 +113,7 @@ func (s *AuthService) GetUserByUsername(username string) (*User, error) {
 
 // GetUsers retrieves all users from the database.
 func (s *AuthService) GetUsers() ([]User, error) {
-	rows, err := s.db.Query("SELECT id, name FROM users")
+	rows, err := s.db.Query(context.Background(), "SELECT id, name FROM users")
 	if err != nil {
 		return nil, fmt.Errorf("failed to query users: %w", err)
 	}

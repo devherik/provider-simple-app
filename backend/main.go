@@ -22,8 +22,10 @@ func main() {
 		gin.SetMode(gin.ReleaseMode)
 	}
 
+	dbURL := cfg.DatabaseURL
+
 	// Connect to the database
-	db, err := services.ConnectDB()
+	db, err := services.ConnectDB(dbURL)
 	if err != nil {
 		log.Fatalf("Failed to connect to database: %v", err)
 	}

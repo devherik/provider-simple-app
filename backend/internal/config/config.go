@@ -9,6 +9,7 @@ type Config struct {
 	Port           string
 	AllowedOrigins []string
 	Environment    string
+	DatabaseURL    string
 }
 
 func New() *Config {
@@ -16,6 +17,7 @@ func New() *Config {
 		Port:           getEnv("PORT", "8080"),
 		AllowedOrigins: []string{getEnv("ALLOWED_ORIGINS", "http://localhost:5173")},
 		Environment:    getEnv("ENVIRONMENT", "development"),
+		DatabaseURL:    getEnv("DATABASE_URL", "postgres://user:password@localhost:5432/dbname"),
 	}
 }
 
