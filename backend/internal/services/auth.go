@@ -9,6 +9,7 @@ import (
 	"log"
 
 	"github.com/jackc/pgx/v5/pgxpool"
+	"golang.org/x/crypto/bcrypt"
 )
 
 var (
@@ -61,12 +62,10 @@ func (s *AuthService) ValidateCredentials(username string, password string) erro
 		return ErrInvalidCredentials
 	}
 
-	/*var hashedPassword string
-	row := s.db.QueryRow(context.Background(), "SELECT password FROM users WHERE name = $1", username)
+	var hashedPassword string
+	row := s.db.QueryRow(context.Background(), "SELECT user_password FROM users WHERE user_name = $1", username)
 	if err := row.Scan(&hashedPassword); err != nil {
 		if err == sql.ErrNoRows {
-			// To prevent user enumeration attacks, you could return ErrInvalidCredentials here.
-			// Returning ErrUserNotFound is also acceptable depending on requirements.
 			return ErrInvalidCredentials
 		}
 		return fmt.Errorf("failed to query user: %w", err)
@@ -78,23 +77,37 @@ func (s *AuthService) ValidateCredentials(username string, password string) erro
 		// This error means the password does not match.
 		log.Printf("Failed login attempt for user %s: %v", username, err)
 		return ErrInvalidCredentials
-	}*/
-
-	var expectedPassword string
-	row := s.db.QueryRow(context.Background(), "SELECT password FROM users WHERE name = $1", username)
-	if err := row.Scan(&expectedPassword); err != nil {
-		if err == sql.ErrNoRows {
-			return ErrUserNotFound
-		}
-		return fmt.Errorf("failed to query user: %w", err)
 	}
 
 	// Use constant time comparison to prevent timing attacks
-	if subtle.ConstantTimeCompare([]byte(password), []byte(expectedPassword)) != 1 {
+	if subtle.ConstantTimeCompare([]byte(password), []byte(hashedPassword)) != 1 {
 		return ErrInvalidCredentials
 	}
 
 	return nil
+}
+
+func (s *AuthService) CreateUser(username, password, theme string) (*User, error) {
+	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
+	if err != nil {
+		return nil, fmt.Errorf("failed to hash password: %w", err)
+	}
+
+	var user User
+	err = s.db.QueryRow(
+		context.Background(),
+		"INSERT INTO users (user_name, user_password, user_theme) VALUES ($1, $2, $3) RETURNING id",
+		username, hashedPassword, theme,
+	).Scan(&user.ID)
+	if err != nil {
+		if err == sql.ErrNoRows {
+			return nil, ErrUserNotFound
+		}
+		return nil, fmt.Errorf("failed to create user: %w", err)
+	}
+
+	user.Username = username
+	return &user, nil
 }
 
 // GetUserByUsername retrieves user information by username

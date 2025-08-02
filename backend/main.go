@@ -76,6 +76,7 @@ func setupRoutes(router *gin.Engine, authHandler *handlers.AuthHandler) {
 		api.POST("/login", authHandler.Login)
 		api.POST("/logout", authHandler.Logout)
 		api.POST("/users", authHandler.GetUsers)
+		api.POST("/users/create", authHandler.CreateUser)
 	}
 
 	// For backward compatibility, keep the old routes
@@ -84,4 +85,5 @@ func setupRoutes(router *gin.Engine, authHandler *handlers.AuthHandler) {
 	router.POST("/login", authHandler.Login)
 	router.POST("/logout", authHandler.Logout)
 	router.POST("/users", authHandler.GetUsers)
+	router.POST("/users/create", authHandler.CreateUser)
 }

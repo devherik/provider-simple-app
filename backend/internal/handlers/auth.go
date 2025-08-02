@@ -74,3 +74,25 @@ func (h *AuthHandler) GetUsers(c *gin.Context) {
 
 	c.JSON(http.StatusOK, users)
 }
+
+func (h *AuthHandler) CreateUser(c *gin.Context) {
+	var req models.CreateUserRequest
+	if err := c.ShouldBindJSON(&req); err != nil {
+		c.JSON(http.StatusBadRequest, models.ErrorResponse{
+			Error:   "validation_error",
+			Message: "Invalid request format",
+		})
+		return
+	}
+
+	user, err := h.authService.CreateUser(req.Username, req.Password, req.Theme)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, models.ErrorResponse{
+			Error:   "internal_error",
+			Message: "Failed to create user",
+		})
+		return
+	}
+
+	c.JSON(http.StatusCreated, user)
+}
