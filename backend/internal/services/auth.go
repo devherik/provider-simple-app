@@ -57,29 +57,32 @@ func ConnectDB(dbURL string) (*pgxpool.Pool, error) {
 }
 
 // ValidateCredentials checks if the provided username and password match a stored hash.
-func (s *AuthService) ValidateCredentials(username string, password string) error {
+func (s *AuthService) ValidateCredentials(username string, password string) (int, error) {
 	if username == "" || password == "" {
-		return ErrInvalidCredentials
+		return 0, ErrInvalidCredentials
 	}
 
 	var hashedPassword string
-	row := s.db.QueryRow(context.Background(), "SELECT user_password FROM users WHERE user_name = $1", username)
-	if err := row.Scan(&hashedPassword); err != nil {
+	var userID int
+	row := s.db.QueryRow(context.Background(), "SELECT id, user_password FROM users WHERE user_name = $1", username)
+	if err := row.Scan(&userID, &hashedPassword); err != nil {
 		if err == sql.ErrNoRows {
-			return ErrInvalidCredentials
+			return 0, ErrInvalidCredentials
 		}
-		return fmt.Errorf("failed to query user: %w", err)
+		return 0, fmt.Errorf("failed to query user: %w", err)
 	}
+
+	log.Printf("Validating credentials for user %s, id %d", username, userID)
 
 	// Compare the provided password with the stored hash.
 	err := bcrypt.CompareHashAndPassword([]byte(hashedPassword), []byte(password))
 	if err != nil {
 		// This error means the password does not match.
 		log.Printf("Failed login attempt for user %s: %v", username, err)
-		return ErrInvalidCredentials
+		return 0, ErrInvalidCredentials
 	}
 
-	return nil
+	return userID, nil
 }
 
 func (s *AuthService) CreateUser(username, password, theme string) (*User, error) {

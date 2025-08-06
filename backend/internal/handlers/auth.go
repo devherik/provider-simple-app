@@ -34,8 +34,8 @@ func (h *AuthHandler) Login(c *gin.Context) {
 		return
 	}
 
-	err := h.authService.ValidateCredentials(req.Username, req.Password)
-	if err != nil {
+	userId, err := h.authService.ValidateCredentials(req.Username, req.Password)
+	if err != nil || userId == 0 {
 		c.JSON(http.StatusUnauthorized, models.ErrorResponse{
 			Error:   "authentication_failed",
 			Message: "Invalid credentials",
@@ -65,6 +65,7 @@ func (h *AuthHandler) Login(c *gin.Context) {
 	c.JSON(http.StatusOK, models.LoginResponse{
 		Message: "Login successful",
 		Token:   tokenString,
+		UserId:  userId,
 	})
 }
 

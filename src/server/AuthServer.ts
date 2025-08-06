@@ -68,5 +68,23 @@ class AuthServer {
         }
     }
     
+    public async updateUser(
+        userId: {userId: number},
+        userName : {userName: string},
+        password: {password: string},
+        theme: {theme: string}
+    ): Promise<boolean> {
+        try {
+            const response = await axios.put(`${AuthServer.#api}api/users/update/${userId.userId}`, {
+                userName: userName.userName,
+                password: password.password,
+                theme: theme.theme
+            });
+            return response.status === 200;
+        } catch (error) {
+            console.error("Error during user update:", error);
+            throw new Error("User update failed due to an unexpected error.");
+        }
+    }
 }
 export default AuthServer;

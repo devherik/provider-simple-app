@@ -9,6 +9,7 @@ import { useTheme } from "../hooks/useTheme";
 type SessionStatusType = "UP" | "DOWN" | "LOADING" | "ERROR";
 
 interface UserCredentials {
+  userId?: number;
   userName: string;
   password?: string;
   theme?: string;
@@ -66,8 +67,9 @@ export default function AuthProvider({
     (currentUser: UserCredentials) => {
       cookie.set("session", "true", { expires: 1 });
       cookie.set("user", currentUser.userName, { expires: 1 });
+      cookie.set("userId", currentUser.userId?.toString() || "", { expires: 1 });
       cookie.set("theme", currentUser.theme!, { expires: undefined });
-      cookie.set("token", currentUser.token!, { expires: undefined });
+      cookie.set("token", currentUser.token!, { expires: 7 });
     },
     [cookie]
   );
@@ -75,6 +77,8 @@ export default function AuthProvider({
   const clearSession = useCallback(() => {
     cookie.remove("session");
     cookie.remove("user");
+    cookie.remove("userId");
+    cookie.remove("token");
     cookie.remove("theme");
   }, [cookie]);
 
@@ -124,15 +128,17 @@ export default function AuthProvider({
               "Login failed: Invalid credentials or server error."
             );
           }
-          const json: { token: string; theme: string } = await data.json();
+          const json: { token: string; theme: string; user_id: number } = await data.json();
           if (!json || !data.ok) {
             throw new Error("Login failed: Invalid response from server.");
           }
           const payload = {
             userName: credentials.userName,
+            userId: json.user_id,
             theme: json.theme === "" ? theme : json.theme,
             token: json.token,
           };
+          console.info("Login successful:", json, payload);
           createSession(payload);
           setCurrentUser(credentials.userName);
           setIsAuthenticated(true);
