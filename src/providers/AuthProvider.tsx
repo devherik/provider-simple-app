@@ -8,6 +8,13 @@ import { useTheme } from "../hooks/useTheme";
 
 type SessionStatusType = "UP" | "DOWN" | "LOADING" | "ERROR";
 
+interface UserCredentials {
+  userName: string;
+  password?: string;
+  theme?: string;
+  token?: string;
+}
+
 interface AuthContextType {
   isAuthenticated: boolean;
   currentUser?: string;
@@ -19,8 +26,9 @@ interface AuthContextType {
   login: (credentials: {
     userName: string;
     password?: string;
+    token?: string;
   }) => Promise<void>;
-  createSession: (currentUser: string) => void;
+  createSession: (currentUser: UserCredentials) => void;
   clearSession: () => void;
   sessionStatus: SessionStatusType;
   /**
@@ -55,12 +63,13 @@ export default function AuthProvider({
   const server = AuthServer.instance;
 
   const createSession = useCallback(
-    (currentUser: string) => {
+    (currentUser: UserCredentials) => {
       cookie.set("session", "true", { expires: 1 });
-      cookie.set("user", currentUser, { expires: 1 });
-      cookie.set("theme", theme, { expires: undefined });
+      cookie.set("user", currentUser.userName, { expires: 1 });
+      cookie.set("theme", currentUser.theme!, { expires: undefined });
+      cookie.set("token", currentUser.token!, { expires: undefined });
     },
-    [cookie, theme]
+    [cookie]
   );
 
   const clearSession = useCallback(() => {
@@ -109,13 +118,22 @@ export default function AuthProvider({
         .login(credentials, {
           password: credentials.password || "password",
         })
-        .then((data) => {
+        .then(async (data) => {
           if (!data) {
             throw new Error(
               "Login failed: Invalid credentials or server error."
             );
           }
-          createSession(credentials.userName);
+          const json: { token: string; theme: string } = await data.json();
+          if (!json || !data.ok) {
+            throw new Error("Login failed: Invalid response from server.");
+          }
+          const payload = {
+            userName: credentials.userName,
+            theme: json.theme === "" ? theme : json.theme,
+            token: json.token,
+          };
+          createSession(payload);
           setCurrentUser(credentials.userName);
           setIsAuthenticated(true);
           setSessionStatus("UP");

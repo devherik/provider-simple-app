@@ -1,5 +1,7 @@
 "use server";
 
+import axios from "axios";
+
 class AuthServer {
     static #instance: AuthServer;
     static #api: string;
@@ -13,24 +15,28 @@ class AuthServer {
         return AuthServer.#instance;
     }
 
-    public async login( userName : {userName: string}, password: {password: string}): Promise<boolean> {
+    public async login( userName : {userName: string}, password: {password: string}): Promise<Response | undefined> {
         try {
-            const response = await fetch(`${AuthServer.#api}login`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    userName: userName.userName,
-                    password: password.password
-                })
+            const response = await axios.post(`${AuthServer.#api}login`, {
+                username: userName.userName,
+                password: password.password
             });
-            return response.ok;
+            if (response.status !== 200) {
+                throw new Error("Login failed: Invalid credentials or server error.");
+            }
+            return new Response(JSON.stringify(response.data), {
+                status: 200,
+                statusText: "OK",
+                headers: {
+                    "Content-Type": "application/json"
+                }
+            });
         } catch (error) {
             console.error("Error during login:", error);
-            throw new Error("Login failed due to an unexpected error.");
+            return undefined;
         }
     }
+
     
     public async logout() {
         try {
