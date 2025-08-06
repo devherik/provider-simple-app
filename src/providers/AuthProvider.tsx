@@ -168,7 +168,10 @@ export default function AuthProvider({
     setSessionStatus("LOADING");
     await server
       .logout()
-      .then(() => {
+      .then(async (data) => {
+        if (!data) {
+          throw new Error("Logout failed: Invalid response from server.");
+        }
         clearSession();
         setCurrentUser("");
         setIsAuthenticated(false);

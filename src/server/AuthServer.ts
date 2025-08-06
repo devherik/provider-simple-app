@@ -40,13 +40,12 @@ class AuthServer {
     
     public async logout() {
         try {
-            const response = await fetch(`${AuthServer.#api}logout`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            }
+            const response = await axios.post(`${AuthServer.#api}logout`, {
+                headers: {
+                    'Content-Type': 'application/json'
+                }
             });
-            return response.ok;
+            return response.status === 200;
         } catch (error) {
             console.error("Error during logout:", error);
             throw new Error("Logout failed due to an unexpected error.");
@@ -57,22 +56,17 @@ class AuthServer {
 
     public async createUser( userName : {userName: string}, password: {password: string}, theme: {theme: string}): Promise<boolean> {
         try {
-            const response = await fetch(`${AuthServer.#api}api/users/create`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    userName: userName.userName,
-                    password: password.password,
-                    theme: theme.theme
-                })
+            const response = await axios.post(`${AuthServer.#api}api/users/create`, {
+                userName: userName.userName,
+                password: password.password,
+                theme: theme.theme
             });
-            return response.ok;
-        } catch (error) {   
+            return response.status === 200;
+        } catch (error) {
             console.error("Error during user creation:", error);
             throw new Error("User creation failed due to an unexpected error.");
         }
     }
+    
 }
 export default AuthServer;
