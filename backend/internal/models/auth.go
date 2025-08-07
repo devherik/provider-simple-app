@@ -32,6 +32,16 @@ type CreateUserResponse struct {
 	User User `json:"user"`
 }
 
+type UpdateUserRequest struct {
+	Username string `json:"username,omitempty"`
+	Password string `json:"password,omitempty"`
+	Theme    string `json:"theme,omitempty"`
+}
+
+type SuccessResponse struct {
+	Message string `json:"message"`
+}
+
 type ErrorResponse struct {
 	Error   string `json:"error"`
 	Message string `json:"message"`

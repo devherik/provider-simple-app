@@ -72,7 +72,7 @@ func setupRoutes(router *gin.Engine, authHandler *handlers.AuthHandler, cfg *con
 	api := router.Group("/api").Use(middleware.Auth(cfg))
 	{
 		api.POST("/user", authHandler.GetUser)
-		// api.PATCH("/users/update/:id", authHandler.UpdateUser)
+		api.PATCH("/users/update/:id", authHandler.UpdateUser)
 	}
 
 	// For backward compatibility, keep the old routes

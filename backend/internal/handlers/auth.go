@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"net/http"
+	"strconv"
 	"time"
 
 	"provider-simple-app-backend/internal/config"
@@ -121,6 +122,58 @@ func (h *AuthHandler) CreateUser(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusCreated, user)
+}
+
+func (h *AuthHandler) UpdateUser(c *gin.Context) {
+	// This function is currently not implemented.
+	// Uncomment and implement the logic as needed.
+
+	idParam := c.Param("id")
+	if idParam == "" {
+		c.JSON(http.StatusBadRequest, models.ErrorResponse{
+			Error:   "validation_error",
+			Message: "User ID is required",
+		})
+		return
+	}
+
+	var req models.UpdateUserRequest
+	if err := c.ShouldBindJSON(&req); err != nil {
+		c.JSON(http.StatusBadRequest, models.ErrorResponse{
+			Error:   "validation_error",
+			Message: "Invalid request format",
+		})
+		return
+	}
+
+	userID, err := strconv.Atoi(idParam)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, models.ErrorResponse{
+			Error:   "validation_error",
+			Message: "Invalid user ID format",
+		})
+		return
+	}
+
+	err = h.authService.UpdateUser(userID, req.Username, req.Password, req.Theme)
+	if err != nil {
+		if err == services.ErrUserNotFound {
+			c.JSON(http.StatusNotFound, models.ErrorResponse{
+				Error:   "user_not_found",
+				Message: "User not found",
+			})
+			return
+		}
+		c.JSON(http.StatusInternalServerError, models.ErrorResponse{
+			Error:   "internal_error",
+			Message: "Failed to update user",
+		})
+		return
+	}
+
+	c.JSON(http.StatusOK, models.SuccessResponse{
+		Message: "User updated successfully",
+	})
 }
 
 func (h *AuthHandler) GetUser(c *gin.Context) {

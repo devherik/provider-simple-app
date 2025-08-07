@@ -109,11 +109,32 @@ func (s *AuthService) CreateUser(username, password, theme string) (*User, error
 	return &user, nil
 }
 
+func (s *AuthService) UpdateUser(userID int, username, password, theme string) error {
+	if userID <= 0 {
+		return ErrUserNotFound
+	}
+
+	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
+	if err != nil {
+		return fmt.Errorf("failed to hash password: %w", err)
+	}
+
+	// Update user information in the database
+	_, err = s.db.Exec(context.Background(),
+		"UPDATE users SET user_name = $1, user_password = $2, user_theme = $3 WHERE id = $4",
+		username, hashedPassword, theme, userID,
+	)
+	if err != nil {
+		return fmt.Errorf("failed to update user: %w", err)
+	}
+	return nil
+}
+
 // GetUserByUsername retrieves user information by username
 func (s *AuthService) GetUserByUsername(username string) (*User, error) {
 	var user User
 	user.Username = username
-	err := s.db.QueryRow(context.Background(), "SELECT id FROM users WHERE name = $1", username).Scan(&user.ID)
+	err := s.db.QueryRow(context.Background(), "SELECT id, user_theme FROM users WHERE user_name = $1", username).Scan(&user.ID, &user.Theme)
 	if err != nil {
 		if err == sql.ErrNoRows {
 			return nil, ErrUserNotFound
@@ -125,7 +146,7 @@ func (s *AuthService) GetUserByUsername(username string) (*User, error) {
 
 // GetUsers retrieves all users from the database.
 func (s *AuthService) GetUsers() ([]User, error) {
-	rows, err := s.db.Query(context.Background(), "SELECT id, name FROM users")
+	rows, err := s.db.Query(context.Background(), "SELECT id, user_name, user_theme FROM users")
 	if err != nil {
 		return nil, fmt.Errorf("failed to query users: %w", err)
 	}
@@ -134,7 +155,7 @@ func (s *AuthService) GetUsers() ([]User, error) {
 	var users []User
 	for rows.Next() {
 		var user User
-		if err := rows.Scan(&user.ID, &user.Username); err != nil {
+		if err := rows.Scan(&user.ID, &user.Username, &user.Theme); err != nil {
 			return nil, fmt.Errorf("failed to scan user: %w", err)
 		}
 		users = append(users, user)
