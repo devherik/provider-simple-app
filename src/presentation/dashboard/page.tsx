@@ -25,7 +25,7 @@ export default function DashboardPage() {
         }}
       >
         <header className={styles.header}>
-          <UserPainel user={currentUser!} onLogout={logout} />
+          <UserPainel user={currentUser!.userName} onLogout={logout} />
         </header>
         <main className={`${styles.mainContent}`}>
           <Slide setBackgroundImage={setBackgroundImage} />

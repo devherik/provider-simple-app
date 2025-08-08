@@ -18,7 +18,7 @@ interface UserCredentials {
 
 interface AuthContextType {
   isAuthenticated: boolean;
-  currentUser?: string;
+  currentUser?: UserCredentials;
   /**
    * Logs in the user with the provided credentials.
    * @param credentials - An object containing userName and optional password.
@@ -38,6 +38,7 @@ interface AuthContextType {
    */
   logout: () => void;
   lookForASession: () => Promise<boolean>;
+  updateUser: (user: UserCredentials) => Promise<void>;
   isLoading?: boolean;
   error: string | null;
 }
@@ -53,7 +54,7 @@ export default function AuthProvider({
 }) {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const { theme, showToast } = useTheme();
-  const [currentUser, setCurrentUser] = useState<string | undefined>(undefined);
+  const [currentUser, setCurrentUser] = useState<UserCredentials | undefined>(undefined);
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [sessionStatus, setSessionStatus] = useState<SessionStatusType>("DOWN");
@@ -89,8 +90,10 @@ export default function AuthProvider({
     try {
       const sessionExists = cookie.get("session") === "true";
       const userName = cookie.get("user");
-      if (sessionExists && userName) {
-        setCurrentUser(userName);
+      const userId = cookie.get("userId");
+      const theme = cookie.get("theme") || "light";
+      if (sessionExists && userName && userId) {
+        setCurrentUser({ userName: userName, userId: parseInt(userId, 10), theme });
         setIsAuthenticated(true);
         setSessionStatus("UP");
         console.info("Session found for user:", userName);
@@ -140,7 +143,7 @@ export default function AuthProvider({
           };
           console.info("Login successful:", json, payload);
           createSession(payload);
-          setCurrentUser(credentials.userName);
+          setCurrentUser(payload);
           setIsAuthenticated(true);
           setSessionStatus("UP");
           showToast(`Welcome back, ${credentials.userName}!`, "success");
@@ -179,7 +182,7 @@ export default function AuthProvider({
           throw new Error("Logout failed: Invalid response from server.");
         }
         clearSession();
-        setCurrentUser("");
+        setCurrentUser(undefined);
         setIsAuthenticated(false);
         setSessionStatus("DOWN");
         showToast("You have been logged out.", "success");
@@ -197,6 +200,45 @@ export default function AuthProvider({
       });
   }, [clearSession]);
 
+  const updateUser = useCallback(
+    async (user: UserCredentials) => {
+      if (!user.userName || !user.userId) {
+        throw new Error("Username and userId are required for update.");
+      }
+      setError(null);
+      await server
+        .updateUser(
+          { userId: user.userId },
+          { userName: user.userName },
+          { password: user.password || "password" },
+          { theme: user.theme || "light" },
+          { token: user.token || "" }
+        )
+        .then(async (data) => {
+          if (!data) {
+            throw new Error("Update failed: Invalid response from server.");
+          }
+          const updatedUser = {
+            userName: user.userName,
+            userId: user.userId,
+            theme: user.theme || "light",
+          };
+          console.info("User updated successfully:", user, updatedUser);
+          createSession(updatedUser);
+          setCurrentUser(updatedUser);
+          showToast(`User ${user.userName} updated successfully!`, "success");
+        })
+        .catch((error) => {
+          console.error("Update failed:", error);
+          setError(
+            error instanceof Error ? error.message : "An unknown error occurred."
+          );
+          throw error;
+        })
+    },
+    [createSession, server]
+  );
+
   const value = useMemo(
     () => ({
       isAuthenticated,
@@ -206,6 +248,7 @@ export default function AuthProvider({
       createSession,
       clearSession,
       lookForASession,
+      updateUser,
       isLoading,
       error,
       sessionStatus,
@@ -218,6 +261,7 @@ export default function AuthProvider({
       createSession,
       clearSession,
       lookForASession,
+      updateUser,
       isLoading,
       error,
       sessionStatus,

@@ -72,14 +72,21 @@ class AuthServer {
         userId: {userId: number},
         userName : {userName: string},
         password: {password: string},
-        theme: {theme: string}
+        theme: {theme: string},
+        token: {token: string}
     ): Promise<boolean> {
         try {
+            const config = {
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token.token}`
+                }
+            };
             const response = await axios.put(`${AuthServer.#api}api/users/update/${userId.userId}`, {
                 userName: userName.userName,
                 password: password.password,
                 theme: theme.theme
-            });
+            }, config);
             return response.status === 200;
         } catch (error) {
             console.error("Error during user update:", error);
