@@ -38,6 +38,7 @@ interface AuthContextType {
    */
   logout: () => void;
   lookForASession: () => Promise<boolean>;
+  updateTheme: (theme: string) => Promise<void>;
   updateUser: (user: UserCredentials) => Promise<void>;
   isLoading?: boolean;
   error: string | null;
@@ -93,7 +94,7 @@ export default function AuthProvider({
       const userId = cookie.get("userId");
       const theme = cookie.get("theme") || "light";
       if (sessionExists && userName && userId) {
-        setCurrentUser({ userName: userName, userId: parseInt(userId, 10), theme });
+        setCurrentUser({ userName: userName, userId: parseInt(userId), theme });
         setIsAuthenticated(true);
         setSessionStatus("UP");
         console.info("Session found for user:", userName);
@@ -200,6 +201,44 @@ export default function AuthProvider({
       });
   }, [clearSession]);
 
+  const updateTheme = useCallback(
+    async (theme: string) => {
+      if (!currentUser || !currentUser.userId) {
+        throw new Error("No user is currently logged in.");
+      }
+      setError(null);
+      await server
+        .updateUser(
+          { userId: currentUser.userId },
+          { userName: currentUser.userName },
+          { password: currentUser.password || "password" },
+          { theme: theme },
+          { token: currentUser.token || "" }
+        )
+        .then(async (data) => {
+          if (!data) {
+            throw new Error("Update failed: Invalid response from server.");
+          }
+          const updatedUser = {
+            userName: currentUser.userName,
+            userId: currentUser.userId,
+            theme: theme,
+          };
+          console.info("User theme updated successfully:", updatedUser);
+          setCurrentUser(updatedUser);
+          showToast(`Theme updated to ${theme} successfully!`, "success");
+        })
+        .catch((error) => {
+          console.error("Update failed:", error);
+          setError(
+            error instanceof Error ? error.message : "An unknown error occurred."
+          );
+          throw error;
+        });
+    },
+    [createSession, currentUser, server]
+  );
+
   const updateUser = useCallback(
     async (user: UserCredentials) => {
       if (!user.userName || !user.userId) {
@@ -248,6 +287,7 @@ export default function AuthProvider({
       createSession,
       clearSession,
       lookForASession,
+      updateTheme,
       updateUser,
       isLoading,
       error,
@@ -261,6 +301,7 @@ export default function AuthProvider({
       createSession,
       clearSession,
       lookForASession,
+      updateTheme,
       updateUser,
       isLoading,
       error,

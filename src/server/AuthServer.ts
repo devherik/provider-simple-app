@@ -82,7 +82,8 @@ class AuthServer {
                     'Authorization': `Bearer ${token.token}`
                 }
             };
-            const response = await axios.put(`${AuthServer.#api}api/users/update/${userId.userId}`, {
+            const response = await axios.patch(`${AuthServer.#api}api/users/update/${userId.userId}`, {
+                id: userId.userId,
                 userName: userName.userName,
                 password: password.password,
                 theme: theme.theme

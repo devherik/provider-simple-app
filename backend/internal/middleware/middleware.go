@@ -16,7 +16,7 @@ import (
 func SetupCORS(cfg *config.Config) gin.HandlerFunc {
 	config := cors.Config{
 		AllowCredentials: true,
-		AllowMethods:     []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"},
+		AllowMethods:     []string{"GET", "POST", "PATCH", "PUT", "DELETE", "OPTIONS"},
 		AllowHeaders:     []string{"Content-Type", "Authorization"},
 		ExposeHeaders:    []string{"Content-Length"},
 		MaxAge:           12 * time.Hour,

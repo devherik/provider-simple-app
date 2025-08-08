@@ -114,19 +114,32 @@ func (s *AuthService) UpdateUser(userID int, username, password, theme string) e
 		return ErrUserNotFound
 	}
 
-	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
-	if err != nil {
-		return fmt.Errorf("failed to hash password: %w", err)
+	// Only update the password if a new one is provided.
+	if password != "" {
+		hashedPassword, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
+		if err != nil {
+			return fmt.Errorf("failed to hash password: %w", err)
+		}
+
+		// Update user with the new password.
+		_, err = s.db.Exec(context.Background(),
+			"UPDATE users SET user_name = $1, user_password = $2, user_theme = $3 WHERE id = $4",
+			username, hashedPassword, theme, userID,
+		)
+		if err != nil {
+			return fmt.Errorf("failed to update user with password: %w", err)
+		}
+	} else {
+		// Update user without changing the password.
+		_, err := s.db.Exec(context.Background(),
+			"UPDATE users SET user_name = $1, user_theme = $2 WHERE id = $3",
+			username, theme, userID,
+		)
+		if err != nil {
+			return fmt.Errorf("failed to update user without password: %w", err)
+		}
 	}
 
-	// Update user information in the database
-	_, err = s.db.Exec(context.Background(),
-		"UPDATE users SET user_name = $1, user_password = $2, user_theme = $3 WHERE id = $4",
-		username, hashedPassword, theme, userID,
-	)
-	if err != nil {
-		return fmt.Errorf("failed to update user: %w", err)
-	}
 	return nil
 }
 
